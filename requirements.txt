@@ -1,0 +1,4 @@
+jq
+swagger-py-codegen
+snudown
+youtube-dl
