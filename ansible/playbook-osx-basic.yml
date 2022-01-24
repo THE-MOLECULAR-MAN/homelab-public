@@ -1,0 +1,149 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    macos_softwareupdate:
+      frequency: 1
+      recommended: true
+      install: true
+      debug: true
+      webkit: true
+
+    homebrew_packages:
+      # - {name: ansible}
+      - {name: awscli}
+      - {name: bat}
+      - {name: colordiff}
+      - {name: coreutils}
+      - {name: docker-clean}
+      # - {name: exiftool}
+      # - {name: fd}
+      - {name: ffmpeg}
+      - {name: fstm}
+      - {name: git}
+      - {name: gnu-sed}
+      - {name: jq}
+      - {name: mas}
+      - {name: openssl}
+      - {name: p7zip}
+      # - {name: python}
+      - {name: telnet}
+      - {name: tree}
+      - {name: unetbootin}
+      - {name: wget}
+      - {name: youtube-dl}
+      - {name: npm}
+
+    homebrew_cask_packages:
+      - burp-suite
+      # - owasp-zap
+      - spotify
+      - sensiblesidebuttons
+      - postman
+      # - discord
+      - docker
+      - firefox
+      # - google-backup-and-sync     # old version, don't use?
+      # - google-drive               # is this the current one?
+      - google-chrome
+      - google-drive-file-stream
+      # - handbrake
+      - krisp
+      # - slack              # must re-install via brew
+      # - sublime-text2
+      # - tor-browser
+      # - vagrant
+      # - virtualbox
+      # - virtualbox-extension-pack
+      - visual-studio-code
+      - vlc
+      # - wireshark
+      # - zoomus             # must re-install via brew
+
+    mas_packages:
+      # - {name: iPic, id: 1101244278}
+      # - {name: iMovie, id: 408981434}
+      - {name: Microsoft Remote Desktop, id: 1295203466}
+      # - {name: Okta Verify, id: 490179405}
+      # - {name: GIF Brewery 3 by Gfycat, id: 1081413713}
+
+    # node_installations:
+    #  - { version: 12.20.2, active: yes}
+    #  - { version: 13.14.0, active: no}
+
+    npm_packages:
+      - {name: less}
+      - {name: npm-check-updates}
+      # - {name: prettier}
+      # - {name: typescript}
+      # - {name: typings}
+  # roles:
+  #  - { role: feffi.macos-softwareupdate}
+  tasks:
+    # brew update
+    - name: update homebrew
+      homebrew: update_homebrew=yes
+      tags:
+        - brew
+
+    # brew install
+    - name: install homebrew packages
+      homebrew: name="{{ item.name}}" state="{{ item.state|default('latest')}}" install_options="{{ item.install_options|default()}}"
+      with_items: "{{ homebrew_packages }}"
+      tags:
+        - brew
+    # - name: symlink python3 as python
+    #  file:
+    #    src: /usr/local/opt/python/bin/python3
+    #    dest: /usr/local/bin/python
+    #    state: link
+    #  tags:
+    #    - brew
+    #    - tmp
+
+    # brew cask install
+    - name: install homebrew cask packages
+      homebrew_cask: name="{{ item }}" state=present
+      with_items: "{{ homebrew_cask_packages }}"
+      ignore_errors: yes
+      tags:
+        - cask
+
+    # mas install
+    - name: install mas (App Store) packages
+      shell: mas install "{{ item.id }}"
+      with_items: "{{ mas_packages }}"
+      register: ret
+      changed_when: '"already installed" not in ret.stdout'
+      tags:
+        - mas
+
+    # mas upgrade
+    - name: upgrade all mas (Apple App Store) packages
+      shell: mas upgrade
+      register: ret
+      changed_when: '"Everything is up-to-date" not in ret.stdout'
+      tags:
+        - mas
+
+    # npm -g install
+    - name: install npm packages
+      npm: name="{{ item.name}}" state="{{ item.state|default('latest')}}" version="{{ item.version|default()}}" global=yes
+      with_items: "{{ npm_packages}}"
+      tags:
+        - npm
+
+    # - name: install pip packages all
+    #  pip:
+    #    name: docutils,setuptools,urllib3,s3transfer
+    #    state: latest
+
+    - name: Delete Java files and directories
+      ansible.builtin.file:
+        path: /Library/Internet\ Plug-Ins/JavaAppletPlugin.plugin /Library/PreferencePanes/JavaControlPanel.prefPane ~/Library/Application\ Support/Oracle/Java
+        state: absent
+
+    # https://github.com/Homebrew/homebrew-core/issues/45009
+    # TODO: make sure brew package pipx is NOT installed, also docker-machine and ilmbase and ansible-lint and maybe ansible

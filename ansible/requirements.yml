@@ -1,0 +1,16 @@
+---
+
+collections:
+  - name: https://github.com/feffi/ansible-macos-softwareupdate.git
+    type: git
+    version: devel
+
+  - name: feffi.macos-softwareupdate
+    version: 1.9.6
+
+  - name: geerlingguy.php_roles
+    version: 0.9.3
+    source: https://galaxy.ansible.com
+
+  - src: https://github.com/feffi/ansible-macos-softwareupdate.git
+    name: feffi.macos-softwareupdate

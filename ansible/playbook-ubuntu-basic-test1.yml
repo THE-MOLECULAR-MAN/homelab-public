@@ -1,0 +1,14 @@
+---
+- name: Test Playbook
+  hosts: debian_family
+  become: yes
+  become_method: sudo
+  vars:
+    ansible_become_password: password
+
+  tasks:
+    - name: Basic connection test
+      shell: uname -a
+
+    - name: Test sudo powers
+      shell: cat /etc/shadow
