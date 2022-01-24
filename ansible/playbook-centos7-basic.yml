@@ -1,0 +1,111 @@
+---
+- name: Basic CentOS bootstrap
+    all CentOS machines including golden images and domained systems
+  hosts: linux_centos7
+  become: yes
+  become_method: sudo
+  serial: 20
+  vars:
+    ansible_become_password: password
+    new_host_timezone: "America/New_York"
+    dns_conf_file_contents: |
+      [main]
+      dns=dnsmasq
+    dnsmasq_conf_file_contents: |
+      conf-dir=/etc/dnsmasq.d,.rpmnew,.rpmsave,.rpmorig
+      listen-address=127.0.0.1
+      cache-size=1000
+
+  tasks:
+    - name: Set the time zone
+      timezone:
+        name: "{{ new_host_timezone }}"
+    # ignore anything but errors on this, don't care about feedback
+    # Why it is done this way and not using the built-in module:
+    # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html
+    - name: Clean up old Yum caches
+      command: yum clean all
+      changed_when: False
+      args:
+        warn: false
+
+    # not available or Installed the same way in Fedora linux
+    - name: Install EPEL repo for some other tool dependencies, separate and earlier since later yum packages may depend on it
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Upgrade security-only packages to the latest version
+      yum:
+        # name: "*"
+        security: yes
+        state: latest
+
+    # this has to be early, before DNS caching stuff since it may be a
+    # dependency for some services
+    - name: Install my common Yum packages for troubleshooting
+      yum:
+        name: dnsmasq,mlocate,openssh-server,net-tools,htop,telnet,nmap,nc,
+          openssl,unzip,wget,curl,tcpdump,traceroute,sysstat,bind-utils,
+          lsof,vim,gcc,automake,autoconf,libtool,make,pam-devel,
+          yum-utils,openldap-devel,openssl-devel,glibc-common,vim-enhanced,
+          python3-pip,tar,grep,realmd,sssd,krb5-workstation,krb5-libs,oddjob,
+          ntpdate, yum-cron,util-linux,
+          oddjob-mkhomedir,samba-common-tools,adcli
+        state: present
+
+    - name: Yum packages that should NOT be installed
+      # deltarpm saves bandwidth but slows down updates in CPU a LOT.
+      yum:
+        name: deltarpm
+        state: absent
+
+    - name: Automatic updates service running and auto-start
+      service:
+        name: yum-cron
+        state: started
+        enabled: yes
+
+    - name: Disable AuditD service for compatability with default install of the Rapid7 agent
+      service:
+        name: auditd
+        state: stopped
+        enabled: no
+
+    - name: Set SELinux to permissive (no enforcement) for compatability with Rapid7 products
+      ansible.posix.selinux:
+        state: permissive
+        policy: targeted
+
+    - name: Clean up unnecessary/unused Yum packages to save space
+      yum:
+        autoremove: yes
+
+    - name: Configure DNS caching config files - dns.conf
+      copy:
+        dest: "/etc/NetworkManager/conf.d/dns.conf"
+        content: "{{ dns_conf_file_contents }}"
+
+    - name: Configure DNS caching config files - dnsmasq.conf
+      copy:
+        dest: "/etc/dnsmasq.conf"
+        content: "{{ dnsmasq_conf_file_contents }}"
+
+    - name: DNS Masq service enabled and started
+      service:
+        name: dnsmasq
+        state: started
+        enabled: yes
+
+    # - name: Restart Network service to reload config to enable DNS caching
+    #  systemd:
+    #    state: started
+    #    daemon_reload: yes
+    #    name: network
+
+    - name: Enable on-going SSD/VM file system TRIM
+      service:
+        # https://opensource.com/article/20/2/trim-solid-state-storage-linux
+        name: fstrim.timer
+        state: started
+        enabled: yes

@@ -1,0 +1,37 @@
+---
+# NEEDS_TO_BE_SANTIZIED_BEFORE_PUBLIC_RELEASE
+- name: CentOS domained and agented
+  hosts: linux_centos7:!golden_images
+  become: yes
+  become_method: sudo
+  serial: 20
+  vars:
+    ansible_become_password: password
+    new_host_timezone: "America/New_York"
+    active_directory_user_to_test: "svc-insightvm@INT.BUTTERS.ME"
+
+  tasks:
+
+    - name: verify joined to domain
+      command: id {{ active_directory_user_to_test }}
+      register: ad_status
+      changed_when: false
+      # ignore_errors: true
+
+    - name: Rapid7 agent installed, runnining, and auto-start
+      service:
+        name: ir_agent
+        state: started
+        enabled: yes
+
+# https://github.com/ahuffman/ansible-sudoers#rhel76-default-sudoers-configuration
+#  - name: "Apply a RHEL7.6 Default /etc/sudoers configuration"
+#  hosts: "all"
+#  tasks:
+#    - name: "Configure /etc/sudoers"
+#      include_role:
+
+# make sure hostname is FQDN and has the proper domain in it
+# firewalls?
+# switch it over to a dedicated ansible service account for easier IDR
+# tracking?
