@@ -25,3 +25,5 @@ touch "$BACKUP_FILE"
 # the dd command doesn't show progress, no easy way to know how long it will
 # take or show remaining time
 sudo dd if="$DISK_TO_BACKUP" | gzip -c > "$BACKUP_FILE"
+
+#send_slack_notification "Staring updates on $(hostname)"

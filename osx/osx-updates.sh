@@ -12,26 +12,22 @@
 #   Example cron to run every 4 hours:
 #   0 */4 * * *	$HOME/g_drive/bin/updates.sh
 # Set up logging to external file
-
+################################################################################
+#	TEMPLATE & DEFINITIONS
+################################################################################
 # bomb out if any errors
 set -e
 
-################################################################################
-#		FUNCTION DEFINITIONS
-################################################################################
 THIS_SCRIPT_NAME=$(basename "$0")                 # can't use the --suffix since it isn't supported in OS X like it is in Linux
 LOGFILE="$HOME/history-$THIS_SCRIPT_NAME.log"         # filename of file that this script will log to. Keeps history between runs.
 
-friendlier_date () {
-    #Looks like this: 2021-02-26 03:55:09 PM EST
-	date +"%Y-%m-%d %I:%M:%S %p %Z"
-}
+# source must come after the variable definitions?
+# can't combine into one line, only one file per source
+source .env
+source common-functions.sh
 
-log () {
-	# formatted log output including timestamp
-	#echo -e "[$THIS_SCRIPT_NAME] $(date)\t $@"
-    echo -e "[$THIS_SCRIPT_NAME] $(friendlier_date)\t $*"
-}
+# output to the log file instead of the screen
+setup_logging
 
 
 restart_Signal () {
@@ -46,12 +42,10 @@ restart_Signal () {
 #		MAIN PROGRAM
 ################################################################################
 
-# Set up logging to external file
-exec >> "$LOGFILE"
-exec 2>&1
-
 # start a log so I know it ran
 log "========= START ============="
+
+send_slack_notification "Starting updates on $(hostname)"
 
 # have to define path since this runs as cron and the path variable doesn't work for some of the commands
 PATH="$HOME/Google Drive File Stream/My Drive/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Python/2.7/bin:/Applications/VMware Fusion.app/Contents/Public"
@@ -130,5 +124,5 @@ pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -
 # restart affect applications
 restart_Signal
 
-
+send_slack_notification "Finished updates on $(hostname)"
 log "==== SCRIPT ENDED SUCCESSFULLY ====="
