@@ -15,3 +15,8 @@ TARGET_MAC_ADDRESS="fc:34:97:a8:d6:14"
 TARGET_BROADCAST_IP_ADDRESS="10.0.1.255"
 
 wakeonlan -i "$TARGET_BROADCAST_IP_ADDRESS" "$TARGET_MAC_ADDRESS"
+
+# optional - verify it is up and running after wake
+TARGET_IP="10.0.1.81"
+ping -c 10 "$TARGET_IP"
+#nmap "$TARGET_IP"
