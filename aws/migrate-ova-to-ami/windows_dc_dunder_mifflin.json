@@ -1,0 +1,10 @@
+[
+  {
+    "Description": "Lab - Dunder Mifflin Domain Controller, DHCP, DNS - v1.3",
+    "Format": "ova",
+    "UserBucket": {
+        "S3Bucket": "redacted",
+        "S3Key": "Windows Server 2016 - DunderMifflin Domain Controller DNS DHCP v1.2.ova"
+    }
+}
+]
