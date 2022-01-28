@@ -1,0 +1,18 @@
+{
+  "Comment": "optional comment about the changes in this change batch request",
+  "Changes": [
+    {
+      "Action": "CREATE",
+      "ResourceRecordSet": {
+        "Name": "_acme-challenge.HOSTNAME.int.REDACTED.me",
+        "Type": "TXT",
+        "TTL": 60,
+        "ResourceRecords": [
+          {
+            "Value": "\"REDACTED\""
+          }
+        ]
+      }
+    }
+  ]
+}
