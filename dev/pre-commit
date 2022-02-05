@@ -1,0 +1,19 @@
+#!/bin/bash
+# Tim H 2019
+# READY_FOR_PUBLIC_REPO
+
+echo "Running pre-commit script..."
+
+git diff --cached --name-only | while read -r FILE; do
+
+	while read -r banned_phrase; do
+	  # echo "$banned_phrase"
+		if grep -qi "$banned_phrase" "$FILE" ; then
+			echo "Aborting commit due to files with $banned_phrase: $FILE"
+			grep -H --line-number --colour=auto -i "$banned_phrase" "$FILE"
+		    exit 1
+		fi
+	done <  "$HOME/source_code/homelab/banned_words.txt"
+done || exit $?
+
+echo "Pre-commit script finished successfully"
