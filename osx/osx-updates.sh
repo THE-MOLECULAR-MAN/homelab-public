@@ -19,12 +19,12 @@
 set -e
 
 THIS_SCRIPT_NAME=$(basename "$0")                 # can't use the --suffix since it isn't supported in OS X like it is in Linux
-LOGFILE="$HOME/history-$THIS_SCRIPT_NAME.log"         # filename of file that this script will log to. Keeps history between runs.
+export LOGFILE="$HOME/history-$THIS_SCRIPT_NAME.log"         # filename of file that this script will log to. Keeps history between runs.
 
 # source must come after the variable definitions?
 # can't combine into one line, only one file per source
-source .env
-source common-functions.sh
+source ../.env
+source ../common-functions.sh
 
 # output to the log file instead of the screen
 setup_logging
