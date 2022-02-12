@@ -23,7 +23,9 @@ find . -type d -name '.git' -print0 -maxdepth 3 | while read -r -d $'\0' ITER_PA
 do
 	# gotta have full path in here
 	cd "$(dirname "${PATH_TO_REPOS}"/"${ITER_PATH_TO_GIT_DIR}")" || exit 2
+	echo "${ITER_PATH_TO_GIT_DIR}"
 	git pull
+	git status
 done
 
 echo "Script finished successfully."
