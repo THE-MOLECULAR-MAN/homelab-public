@@ -26,6 +26,7 @@ do
 	echo "${ITER_PATH_TO_GIT_DIR}"
 	git pull
 	git status
+	git push
 done
 
 echo "Script finished successfully."
