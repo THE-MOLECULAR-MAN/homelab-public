@@ -17,6 +17,11 @@ TARGET_BROADCAST_IP_ADDRESS="10.0.1.255"
 wakeonlan -i "$TARGET_BROADCAST_IP_ADDRESS" "$TARGET_MAC_ADDRESS"
 
 # optional - verify it is up and running after wake
+# echo "arping requires sudo..."
+# sudo /usr/local/sbin/arping -i en0 -c 3 "$TARGET_MAC_ADDRESS"
+
 TARGET_IP="10.0.1.81"
 ping -c 10 "$TARGET_IP"
-#nmap "$TARGET_IP"
+
+# nmap "$TARGET_IP"
+
