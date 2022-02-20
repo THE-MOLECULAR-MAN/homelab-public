@@ -1,14 +1,20 @@
 # homelab-public
-General homelab scripts, mostly bootstraps for installing and configuring various software on CentOS 7
-I'm fully aware that Bash isn't the best option for a lot of these things, 
-and that other languages like Python would be better suited for it.
+General homelab scripts, mostly bootstraps for installing and configuring various 
+InfoSec and IT software on CentOS 7. 
 
-The reason I wrote these files in Bash was to make it super easy for people with
-limited Linux experience to run them
-without running into dependencies issues or Python version issues.
+These scripts were intentionally written in Bash to make it super easy for people
+with limited Linux experience to run them without running into dependencies issues
+or Python version issues. It's designed for homelab newbies to copy and paste or
+download and directly run .sh files.
 
-A good amount of the code can be copied and pasted into the command line
-by people less experienced with Linux.
+I've started migrating some of this to Ansible for more advanced users, and will
+probably migrate some to Python too one day.
 
-This is kinda related to some files in https://github.com/rapid7/presales-engineering/tree/tim-dev
+Some of the oldest scripts date back to when I worked at @ziften in 2011 and
+have continued writing code while at @rapid7 .
 
+I'm the primary contributor to @rapid7 's presales engineering GitHub repository
+too: https://github.com/rapid7/presales-engineering/tree/tim-dev
+
+Some of the scripts in this homelab repository are related to some of the Rapid7
+scripts.
