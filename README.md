@@ -18,3 +18,6 @@ too: https://github.com/rapid7/presales-engineering/tree/tim-dev
 
 Some of the scripts in this homelab repository are related to some of the Rapid7
 scripts.
+
+Here's my homelab hardware that this repo was built to run on.
+![Picture of homelab](https://i.imgur.com/LzBtQjL.jpg)
