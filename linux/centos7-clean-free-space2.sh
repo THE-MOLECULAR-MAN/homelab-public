@@ -3,7 +3,7 @@
 # clean up, free up space
 # SAFE_FOR_PUBLIC_RELEASE
 
-sudo yum autoremove
+sudo yum -y autoremove
 sudo yum clean all
 
 sudo journalctl --vacuum-time=1h
