@@ -16,7 +16,8 @@
       command: id {{ active_directory_user_to_test }}
       register: ad_status
       changed_when: false
-      # ignore_errors: true
+      # I think ignore_errors might be required. the command sometimes returns non-zero error codes when things are okay
+      ignore_errors: true
 
     - name: Rapid7 agent installed, runnining, and auto-start
       service:
