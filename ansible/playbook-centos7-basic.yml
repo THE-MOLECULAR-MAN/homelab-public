@@ -20,14 +20,17 @@
     - name: Set the time zone
       timezone:
         name: "{{ new_host_timezone }}"
+
+
     # ignore anything but errors on this, don't care about feedback
     # Why it is done this way and not using the built-in module:
     # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html
-    - name: Clean up old Yum caches
-      command: yum clean all
-      changed_when: False
-      args:
-        warn: false
+
+    #- name: Clean up old Yum caches
+    #  command: yum clean all
+    #  changed_when: False
+    #  args:
+    #    warn: false
 
     # not available or Installed the same way in Fedora linux
     - name: Install EPEL repo for some other tool dependencies, separate and earlier since later yum packages may depend on it
@@ -50,8 +53,10 @@
           lsof,vim,gcc,automake,autoconf,libtool,make,pam-devel,
           yum-utils,openldap-devel,openssl-devel,glibc-common,vim-enhanced,
           python3-pip,tar,grep,realmd,sssd,krb5-workstation,krb5-libs,oddjob,
-          ntpdate, yum-cron,util-linux,
-          oddjob-mkhomedir,samba-common-tools,adcli
+          ntpdate,yum-cron,util-linux,jq,fio,ioping,screen,swaks,
+          iperf3,coreutils,lvm2,xfsprogs,nfs-utils,tcpflow,nload,
+          python2-demjson,oddjob-mkhomedir,samba-common-tools,adcli,
+          nodejs,npm,cloud-utils-growpart
         state: present
 
     - name: Yum packages that should NOT be installed
