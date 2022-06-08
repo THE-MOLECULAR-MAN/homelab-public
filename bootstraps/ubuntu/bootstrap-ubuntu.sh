@@ -33,6 +33,8 @@ hostnamectl set-hostname "$NEW_HOSTNAME.$DOMAIN_TO_JOIN"
 
 sudo apt-get install -y realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
 
+# THIS IS an interactive prompt
+# type in the full domain in all caps: ex: "INT.REDACTED.ME"
 sudo apt-get install -y krb5-user
 
 sudo apt-get install -y open-vm-tools
@@ -45,8 +47,5 @@ sudo apt-get install -y apt-file apt-transport-https arping autoconf automake \
 
 sudo ntpdate pool.ntp.org
 
-
-
 sudo apt autoremove -y
 sudo apt-get clean
-
