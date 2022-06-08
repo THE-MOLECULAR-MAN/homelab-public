@@ -49,6 +49,10 @@ cp "$HOME/mexico-aes-256-cbc-udp-ip.ovpn" /etc/openvpn/server.conf
 # username starts with a "p" and then a bunch of numbers for Private Internet Access customers
 systemctl -f start openvpn@server.service
 
+# troubleshooting if necessary:
+systemctl status -l openvpn@server.service
+journalctl -xe
+
 # Wait a moment after connecting for it to finish initializing
 sleep 10
 
@@ -98,7 +102,7 @@ reboot
 # Killswitch - must do from a VM console, NOT an SSH session since this will kill network access during setup.
 
 # test internet connectivity before making changes:
-systemctl status openvpn@server.service
+sudo systemctl status openvpn@server.service
 ifconfig tun0
 route
 ping -c 3 8.8.8.8
@@ -106,33 +110,70 @@ nslookup serverfault.com
 curl ifconfig.co
 curl https://captive.apple.com/
 
+# install IPtables
+sudo yum install -y iptables-services
+sudo systemctl enable iptables
+sudo systemctl enable ip6tables
+sudo systemctl restart iptables
+
 # backup the firewall rules before changing them
-iptables save > "$HOME/iptables-backup.ipv4"
+#iptables save > "$HOME/iptables-backup.ipv4"
+
+
+sudo iptables --list-rules > "$HOME/iptables-backup.ipv4"
 
 #firewall-cmd
 
+cat <<EOF > "$HOME/change-firewall.sh"
+#!/bin/bash
 LAN_NETWORK="10.0.1.0/24"
-VPN_ENDPOINT_IP="77.81.142.104"
+VPN_ENDPOINT_IP="77.81.142.104" # more or less static IP for Private Interenet Access service
 NIC_ADAPTER_NAME="ens192"   # not the VPN adapter like tun0
 VPN_ADAPTER_NAME="tun0"
 
-# custom added: allows incoming and outgoing LAN traffic:
-#iptables -A OUTPUT -d 10.0.1.0/24 -j ACCEPT
-#iptables -A INPUT  -d 10.0.1.0/24 -j ACCEPT
-
 # set firewall rules
-iptables --flush
-iptables --delete-chain
-iptables -t nat --flush
-iptables -t nat --delete-chain
-iptables -P OUTPUT DROP
-iptables -A INPUT -j ACCEPT -i lo
-iptables -A OUTPUT -j ACCEPT -o lo
-iptables -A INPUT --src $LAN_NETWORK -j ACCEPT -i $NIC_ADAPTER_NAME
-iptables -A OUTPUT -d $LAN_NETWORK -j ACCEPT -o $NIC_ADAPTER_NAME
-iptables -A OUTPUT -j ACCEPT -d $VPN_ENDPOINT_IP -o $NIC_ADAPTER_NAME -p udp -m udp --dport 1194
-iptables -A INPUT -j ACCEPT -s $VPN_ENDPOINT_IP -i $NIC_ADAPTER_NAME -p udp -m udp --sport 1194
-iptables -A INPUT -j ACCEPT -i $VPN_ADAPTER_NAME
-iptables -A OUTPUT -j ACCEPT -o $VPN_ADAPTER_NAME
+sudo iptables --flush
+sudo iptables --delete-chain
+sudo iptables -t nat --flush
+sudo iptables -t nat --delete-chain
+sudo iptables -P OUTPUT DROP
+sudo iptables -A INPUT -j ACCEPT -i lo
+sudo iptables -A OUTPUT -j ACCEPT -o lo
+sudo iptables -A INPUT --src $LAN_NETWORK -j ACCEPT -i $NIC_ADAPTER_NAME
+sudo iptables -A OUTPUT -d $LAN_NETWORK -j ACCEPT -o $NIC_ADAPTER_NAME
+sudo iptables -A OUTPUT -j ACCEPT -d $VPN_ENDPOINT_IP -o $NIC_ADAPTER_NAME -p udp -m udp --dport 1194
+sudo iptables -A INPUT -j ACCEPT -s $VPN_ENDPOINT_IP -i $NIC_ADAPTER_NAME -p udp -m udp --sport 1194
+sudo iptables -A INPUT -j ACCEPT -i $VPN_ADAPTER_NAME
+sudo iptables -A OUTPUT -j ACCEPT -o $VPN_ADAPTER_NAME
 
-service iptables save
+# custom added: allows incoming and outgoing LAN traffic:
+iptables -A OUTPUT -d 10.0.1.0/24 -j ACCEPT
+iptables -A INPUT  -d 10.0.1.0/24 -j ACCEPT
+
+sudo service iptables save
+sudo iptables --list-rules > "$HOME/iptables-new.ipv4"
+
+EOF
+
+chmod u+x change-firewall.sh
+# gotta do this in a screen session:
+screen
+./change-firewall.sh
+reboot now
+
+
+# test if the killswitch works by stopping the VPN service:
+# verify working first:
+sudo systemctl status openvpn@server.service
+ifconfig -a
+ifconfig tun0
+route
+ping -c 3 8.8.8.8
+nslookup serverfault.com
+curl ifconfig.co
+curl https://captive.apple.com/
+
+
+
+
+sudo systemctl stop openvpn@server.service
