@@ -27,14 +27,15 @@ fe00::0 ip6-localnet
 ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
-" > /etc/hosts
+" | sudo tee /etc/hosts
 
-hostnamectl set-hostname "$NEW_HOSTNAME.$DOMAIN_TO_JOIN"
+sudo hostnamectl set-hostname "$NEW_HOSTNAME.$DOMAIN_TO_JOIN"
 
 sudo apt-get install -y realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
 
 # THIS IS an interactive prompt
 # type in the full domain in all caps: ex: "INT.REDACTED.ME"
+# this does not join the asset to the domain
 sudo apt-get install -y krb5-user
 
 sudo apt-get install -y open-vm-tools
