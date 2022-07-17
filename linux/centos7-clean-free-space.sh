@@ -16,11 +16,11 @@ sudo journalctl --disk-usage
 yum clean all
 
 # remove unused Yum packages
-package-cleanup --quiet --leaves 
-package-cleanup --quiet --leaves | xargs yum remove -y
+sudo package-cleanup --quiet --leaves 
+sudo package-cleanup --quiet --leaves | xargs yum remove -y
 
 # remove old, unused Kernels, keep only the most recent 2 kernels
-package-cleanup -y --oldkernels --count=2
+sudo package-cleanup -y --oldkernels --count=2
 
 # clear out logs but don't delete the files
 find /var -name "*.log" -exec truncate {} --size 0 \;
