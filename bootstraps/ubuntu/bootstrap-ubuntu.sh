@@ -3,16 +3,15 @@
 
 NEW_HOSTNAME="new-appliance"
 DOMAIN_TO_JOIN="INT.REDACTED.ME" # must be in all caps
-#DOMAIN_ADMIN_USERNAME="jdoe.adm"    # domain admin used to join the domain
-NEW_TIMEZONE="America/New_York"
-
+DOMAIN_ADMIN_USERNAME="jdoe.adm"    # domain admin used to join the domain
 
 NEW_FQDN="$NEW_HOSTNAME.$DOMAIN_TO_JOIN"
+
+NEW_TIMEZONE="America/New_York"
 
 # see current Ubuntu version
 lsb_release -a 
 
-# upgrade to latest LTS version of Ubuntu
 sudo do-release-upgrade --check-dist-upgrade-only
 
 timedatectl set-timezone "$NEW_TIMEZONE"
@@ -32,25 +31,22 @@ ff02::2 ip6-allrouters
 
 sudo hostnamectl set-hostname "$NEW_HOSTNAME.$DOMAIN_TO_JOIN"
 
-# for virtual machines:
+sudo apt-get install -y realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
+
+# THIS IS an interactive prompt
+# type in the full domain in all caps: ex: "INT.REDACTED.ME"
+# this does not join the asset to the domain
+sudo apt-get install -y krb5-user
+
 sudo apt-get install -y open-vm-tools
 
-# standard tools:
 sudo apt-get install -y apt-file apt-transport-https arping autoconf automake \
-	ca-certificates curl dnsutils gcc gnupg-agent grep libtool lsof make \
-	mlocate net-tools netcat nmap npm ntpdate openssh-server openssl \
-	python3-pip screen software-properties-common sysstat tar tcpdump \
-	tcpflow telnet traceroute unzip vim wget
+		ca-certificates curl dnsutils gcc gnupg-agent grep libtool lsof make \
+		mlocate net-tools netcat nmap npm ntpdate openssh-server openssl \
+		python3-pip screen software-properties-common sysstat tar tcpdump \
+		tcpflow telnet traceroute unzip vim wget
 
 sudo ntpdate pool.ntp.org
 
-sudo pip3 install --upgrade pip
-
 sudo apt autoremove -y
 sudo apt-get clean
-
-# If you're going to join a domain:
-# THIS IS an interactive prompt
-# type in the full domain in all caps: ex: "INT.REDACTED.ME"
-#sudo apt-get install -y realmd libnss-sss libpam-sss sssd sssd-tools adcli samba-common-bin oddjob oddjob-mkhomedir packagekit
-#sudo apt-get install -y krb5-user
