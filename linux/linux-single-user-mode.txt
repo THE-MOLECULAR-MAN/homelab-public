@@ -1,0 +1,14 @@
+# single user mode in Ubuntu 20.04
+
+press Escape during boot to pull up Grub menu
+press "e" to edit the default entry
+scroll down and Find the kernel line (it starts with linux /boot/) and 
+    add init=/bin/bash at the end of the line.
+Press Ctrl+X
+
+# remount file system as read-write so you can make changes:
+mount -o remount,rw /
+
+
+# after done making changes, can boot regularly with this command:
+exec /sbin/init
