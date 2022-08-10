@@ -46,11 +46,31 @@ cd "$HOME"
 #tail -f /var/log/{messages,kernel,dmesg,syslog}
 
 # optional, provide the lsusb command for debugging and validation
-yum install -y usbutils
+# CentOS only. Is already included in Ubuntu
+# sudo yum install -y usbutils
 
 # bash to make sure it is connected BEFORE installing the PowerPanel Business Local Module
 lsusb | grep "Cyber Power System"
 
+# requires ufw to be enabled and running
+# GOTCHA: installer will make changes to firewall rule and force UFW
+# system will reject future SSH connections if you don't do all this first
+# gotta be just like this, no changes on next 2 lines:
+sudo dpkg -P ufw iptables
+# sudo apt-get -y reinstall ufw
+
+# sudo ufw enable
+# sudo systemctl start  ufw
+# sudo systemctl enable ufw
+# sudo ufw default deny incoming
+# sudo ufw default allow outgoing
+# sudo ufw allow ssh
+# sudo ufw status verbose
+sudo reboot now
+
+# # make sure the service is running, active, and SSH is open after reboot
+# sudo ufw status verbose
+# sudo systemctl status ufw
 
 ##############################################################################
 # DOWNLOAD AND INSTALL PowerPanel Business LOCAL
@@ -58,12 +78,11 @@ lsusb | grep "Cyber Power System"
 ##############################################################################
 # Turns out that the "global" edition is newer, less buggy
 # different site for downloading
-# As of the time of this writing, the regular download site shows v4.4.0
-# and the "global" site shows 4.7.0
-# https://www.cyberpower.com/global/en/product/sku/powerpanel%C2%AE_business_for_linux#downloads
+# https://www.cyberpower.com/global/en/product/sku/powerpanel_business_for_linux#downloads
+
 PPB_LOCAL_INSTALLER_URL="https://www.cyberpower.com/global/en/File/GetFileSampleByType?fileId=SU-20040001-04&fileType=Download%20Center&fileSubType=FileOriginal"
-PPB_LOCAL_INSTALLER_FILENAME="CyberPower_PPB_Linux+64bit_v4.7.0.sh"
-PPB_LOCAL_INSTALLER_MD5="2DCD9DB2525D727EBA200B19B7828FDA"
+PPB_LOCAL_INSTALLER_FILENAME="CyberPower_PPB_Linux_64bit_v4.8.1.sh"
+PPB_LOCAL_INSTALLER_MD5="35E679BDC9751C8E829AAD1C7FADD146"
 
 # download the file, set the filename like the site
 wget -O "$PPB_LOCAL_INSTALLER_FILENAME" "$PPB_LOCAL_INSTALLER_URL"
@@ -80,25 +99,56 @@ set +e
 chmod 500 "./$PPB_LOCAL_INSTALLER_FILENAME"
 
 # It's an interactive install, not sure if there are flags that can be passed or an answers file
-./$PPB_LOCAL_INSTALLER_FILENAME
-# Enter 9 times, Acccept the license (1), Default install directory (Enter), 1 (Management component)
+# don't forget the "-c" flag
+# try being root, not just sudo on regular user?
+sudo ./"$PPB_LOCAL_INSTALLER_FILENAME" -c
+
+# Enter 9 times, Acccept the license (1), 
+# Default install directory (Enter), 
+# 1 (Local)
 
 # list all the running services:
-#systemctl list-units --type service
+# sudo systemctl list-units --type service
  
 # list all Cyberpower services:
-#systemctl list-units --type service | grep -i "Cyber\|UPS\|power"
+# sudo systemctl list-units --type service | grep -i "Cyber\|UPS\|power\|ppb"
 
 # list the newly installed service
-systemctl status ppbed.service
-# at this point the service named pped should be installed and running
+systemctl status ppbed.service  # CyberPower UPS PowerPanel Business Edition
+systemctl status ppbwd.service  # Monitor PowerPanel Business Service
+#systemctl status ufw
+#sudo ufw status
+
+
+# searching for errors:
+# dmesg | grep 'ppb\|cyber'
+# IT may start ufw service in Ubuntu
+# so it sets up UFW shit and closes SSH (22)
+# find /var/log -type f -exec grep -i 'cyber\|ppb' {} \;
+# from remote system:
+# nmap -Pn -p22,3052,53568 ups-local02.int.butters.me
 
 # list the processes that are listening and on which ports, java process should be listening on 3052 (default web app port)
-netstat -tunlp | grep LISTEN
+sudo netstat -tunlp | grep 'java\|LISTEN\|ppb'
+
+# test http connection
+curl --insecure "http://$(hostname):3052/local/login"
+
+# show version:
+grep "To_PPB_version" /opt/PPB/log/PPBInfo.properties | cut -d '=' -f2
 
 # now visit this site to verify it is recognizing the UPS
 # http://centos-hostname:3052/
+# GOTCHA: disable JavaScript blocker for this site, it's required to run
 # default creds are: admin/admin ; note that you can't press Enter, have to click the red Log In button
 # it should already recognize the UPS at this stage. If it does not, then do not continue
 
 # modify the shared secret, enable HTTPS, lock it down since it is pretty insecure.
+
+# test new https service after enabling in options menu
+curl --insecure "http://$(hostname):53568/local/login"
+
+# GOTCHA: make sure it comes back up after reboot:
+sudo reboot now
+# nmap -Pn -p22,3052,53568 ups-local02.int.butters.me
+# after a few min SSH dies and becomes closed
