@@ -1,11 +1,13 @@
 #!/bin/bash
 # Tim H 2022
+# Update via internet
 
 # references:
 #   https://www.altaro.com/vmware/top-20-esxcli-commands/
+#   https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/esx/vmw/vmw-esx-index.xml
 
-# list of versions and build numbers and release dates:
-# https://kb.vmware.com/s/article/2143832
+#   list of versions and build numbers and release dates:
+#       https://kb.vmware.com/s/article/2143832
 
 # see current version
 vmware -v

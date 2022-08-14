@@ -1,6 +1,7 @@
 #!/bin/bash
 # Tim H 2021
 # upgrade ESXi hypervisor version
+# Update via offline updates manually downloaded onto a local datastore
 # ESX CLI doesn't recognize comments, so can't put them on the same line as the command
 
 # References:
