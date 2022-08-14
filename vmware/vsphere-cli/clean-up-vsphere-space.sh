@@ -29,6 +29,9 @@ find /storage/log                -iname 'localhost_access*' -type f -delete
 find /var/log/vmware/vmware-sps  -iname 'sps-access*log'    -type f -delete
 rm -f /var/mail/root
 
+find /storage/log -iname '*.log' -mtime +7 -type f -exec truncate {} --size 0 \;
+find /storage/log -type f -size +100M -mtime +28   -exec truncate {} --size 0 \;
+
 # locate the log disk and partition for resizing
 fdisk -l /dev/mapper/log_vg-log
 # Disk /dev/mapper/log_vg-log: 10 GiB, 10729029632 bytes, 20955136 sectors
