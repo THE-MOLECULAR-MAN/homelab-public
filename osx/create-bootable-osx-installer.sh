@@ -12,3 +12,5 @@
 #  your flash drive
 
 sudo /Applications/Install\ macOS\ Big\ Sur.app/Contents/Resources/createinstallmedia --volume /Volumes/silverFlash
+sudo diskutil unmount "/Volumes/Install macOS Big Sur"
+
