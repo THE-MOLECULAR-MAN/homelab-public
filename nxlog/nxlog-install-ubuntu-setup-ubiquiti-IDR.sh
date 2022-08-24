@@ -20,34 +20,8 @@ INCOMING_UDP_PORT_FROM_UNIFI_SYSLOG="7878"
 IDR_COLLECTOR_IP="10.0.1.40"
 IDR_COLLECTOR_LISTENING_PORT="7879"
 
-# set the path to the latest version of the NX Log package for this distro:
-PACKAGE_INSTALLER_URL="https://nxlog.co/system/files/products/files/348/nxlog-ce_3.0.2272_ubuntu_focal_amd64.deb"
-
-# install dependencies:
-sudo apt-get update
-sudo apt-get -y install debsig-verify
-
-cd "$HOME" || exit 1
-git clone https://gitlab.com/nxlog-public/contrib.git
-
-# download the installer package
-wget --no-clobber --output-document="$HOME/nxlog-ce.deb" "$PACKAGE_INSTALLER_URL"
-
-# validate it:
-dpkg-deb --info "$HOME/nxlog-ce.deb"
-cd "$HOME/contrib/deb-verify" || exit 2
-sudo cp -vR ./policies/* /etc/debsig/policies/
-sudo cp -vR ./keyrings/* /usr/share/debsig/keyrings/
-debsig-verify --policies-dir /etc/debsig/policies/ --keyrings-dir $/usr/share/debsig/keyrings/ "$HOME/nxlog-ce.deb"
-#./deb-verify.sh "$HOME/nxlog-ce.deb"
-
-# install NXLog community edition
-sudo apt-get install "$HOME/nxlog-ce.deb"
-
-# autorun
-sudo systemctl enable nxlog.service
-
-cp /etc/nxlog/nxlog.conf /etc/nxlog/nxlog.conf.backup
+# go run the install-nxlog-ubuntu.sh script to install it.
+# next steps configure it.
 
 cat << EOF > /etc/nxlog/nxlog.conf
 LogFile /var/log/nxlog/nxlog.log
