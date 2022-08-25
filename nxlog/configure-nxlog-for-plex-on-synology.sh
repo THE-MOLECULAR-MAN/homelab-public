@@ -1,34 +1,47 @@
 #!/bin/bash
 # Tim H 2022
-#PLEX_MEDIA_SERVER_USE_SYSLOG=true
+# Configures a Docker container that uses Ubuntu on Synology DSM 7.x
+# Installs nxlog inside the Docker container
+#
+# PLEX_MEDIA_SERVER_USE_SYSLOG=true
+# "/var/packages/Plex Media Server/scripts/start-stop-status"
+# "/volume1/PlexMediaServer/AppData/Plex Media Server/Preferences.xml"
 
-#"/var/packages/Plex Media Server/scripts/start-stop-status"
-#"/volume1/PlexMediaServer/AppData/Plex Media Server/Preferences.xml"
-
-/var/packages/Docker/etc/dockerd.json
-#"experimental": true
+# on the DSM:
+# /var/packages/Docker/etc/dockerd.json
+# "experimental": true
 # restart daemon, takes 2+ minutes
 sudo synopkgctl stop Docker && sudo synopkgctl start Docker
 
-#Logs: 
-#mount "/volume1/PlexMediaServer/AppData/Plex Media Server/Logs" as /plex_logs
 
-docker pull ubuntu
-docker container start nxlog-ubuntu1
-#docker checkpoint create nxlog-ubuntu1 checkpoint1
-docker attach nxlog-ubuntu1
+##############################################################################
+# CREATE A NEW CONTAINER
+# works on Synology command line and OS X
+##############################################################################
+CONTAINER_NAME="nxlog-ubuntu-pkg-1"
+sudo docker pull ubuntu
+# on Synology:
+sudo docker container create -v "/volume1/PlexMediaServer/AppData/Plex Media Server/Logs":/plex_logs -i -t --name "$CONTAINER_NAME" ubuntu
+# on OS X:
+sudo docker container create -i -t --name "$CONTAINER_NAME" ubuntu
 
+# sudo docker container list --all
+sudo docker container start --attach -i "$CONTAINER_NAME"
+
+
+##############################################################################
+# INSIDE THAT CONTAINER
+##############################################################################
 # verify the mount point exists:
 ls /plex_logs
 
-apt-get update
-apt-get upgrade
+apt-get update # 4 seconds on MacBook Pro
+apt-get upgrade -y # 3 seconds on Macbook Pro
 
 # now go run the compile-nxlog-from-source-ubuntu.sh script inside the container
 
-# The following packages have unmet dependencies:
-#  nxlog-ce : Depends: libperl5.30 (>= 5.30.0) but it is not installable
-#             Depends: libpython3.8 (>= 3.8.2) but it is not installable
-#             Depends: libssl1.1 (>= 1.1.0) but it is not installable
-# E: Unable to correct problems, you have held broken packages.
+##############################################################################
+# TAKE A SNAPSHOT/checkpoint
+##############################################################################
 
+sudo docker checkpoint create "$CONTAINER_NAME" readyforinstall
