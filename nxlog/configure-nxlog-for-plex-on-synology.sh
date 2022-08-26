@@ -1,17 +1,15 @@
 #!/bin/bash
 # Tim H 2022
+# MOVE_TO_GRAVEYARD 
 # Configures a Docker container that uses Ubuntu on Synology DSM 7.x
 # Installs nxlog inside the Docker container
-#
-# PLEX_MEDIA_SERVER_USE_SYSLOG=true
-# "/var/packages/Plex Media Server/scripts/start-stop-status"
-# "/volume1/PlexMediaServer/AppData/Plex Media Server/Preferences.xml"
 
-# on the DSM:
+# on the DSM, enable experimental mode to allow container checkpoints
 # /var/packages/Docker/etc/dockerd.json
+# add this line:
 # "experimental": true
 # restart daemon, takes 2+ minutes
-sudo synopkgctl stop Docker && sudo synopkgctl start Docker
+# sudo synopkgctl stop Docker && sudo synopkgctl start Docker
 
 
 ##############################################################################
