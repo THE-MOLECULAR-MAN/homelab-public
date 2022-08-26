@@ -1,6 +1,8 @@
 #!/bin/bash
 # Tim H 2022
+# MOVE_TO_GRAVEYARD
 # fixing NXLog issues
+
 
 sudo yum reinstall nxlog-ce.rpm
 sudo systemctl enable nxlog.service
