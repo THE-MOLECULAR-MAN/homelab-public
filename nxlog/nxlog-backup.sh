@@ -1,5 +1,6 @@
 #!/bin/bash
 # Tim H 2022
+# MOVE_TO_GRAVEYARD
 # Backing up NXLog from CentOS 7
 
 set -e
