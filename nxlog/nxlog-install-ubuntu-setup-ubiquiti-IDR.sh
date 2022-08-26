@@ -1,8 +1,6 @@
 #!/bin/bash
 # Tim H 2022
-# Better than the CentOS version of this script. Includes stuff from
-# nxlog-fix.sh
-
+# MOVE_TO_PRESALES_REPO
 # install and configure NXLog for Ubuntu 20.04
 # add an adapter to recieve incoming Ubiquiti UniFi syslogs
 # and convert them to JSON and forward them to a Rapid7 InsightIDR
