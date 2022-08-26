@@ -1,5 +1,6 @@
 #!/bin/bash
 # Tim H 2022
+# MOVE_TO_HOMELAB_PRIVATE
 # Manually uninstalls nxlog
 # Works on Ubuntu 20.04 VM and container
 
