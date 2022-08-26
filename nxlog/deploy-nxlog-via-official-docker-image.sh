@@ -1,5 +1,7 @@
 #!/bin/bash
 # Tim H 2022
+# MOVE_TO_GRAVEYARD
+# Didn't work, was replaced by my custom Docker image
 
 # Deploy and configure nxlog-ce via official docker container image
 # https://docs.nxlog.co/userguide/integrate/docker.html
