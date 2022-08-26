@@ -1,5 +1,7 @@
 #!/bin/bash
 # Tim H 2022
+# MOVE_TO_GRAVEYARD
+# Didn't work, was replaced by my custom Docker image
 # compile nxlog from source on Ubuntu 20.04
 # designed for Container but also VM
 # this compiles the binary and the binary works, but 
