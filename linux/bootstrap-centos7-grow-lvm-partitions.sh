@@ -14,16 +14,16 @@
 #   https://kb.vmware.com/s/article/1006371
 
 # Clean up to save space, drive might be full:
-yum clean all
-yum autoremove
+sudo yum clean all
+sudo yum autoremove
 
 # install dependencies for commands called in this script
-yum install -y coreutils lvm2 xfsprogs cloud-utils-growpart
+sudo yum install -y coreutils lvm2 xfsprogs cloud-utils-growpart
 
 # check which Filessystem is used on /, should be EXT4 or XFS for this script
 df -T /
 
-fdisk /dev/sda
+sudo fdisk /dev/sda
 # n p 3 [enter] [enter] [enter] w
 
 # maybe I'll do it this way automated one day
@@ -31,15 +31,15 @@ fdisk /dev/sda
 #parted -a optimal /dev/sda mkpart primary 0% 4096MB
 
 # mandatory reboot after resizing
-reboot
+sudo reboot
 
-pvcreate /dev/sda3
-vgextend centos_centos7std /dev/sda3
+sudo pvcreate /dev/sda3
+sudo vgextend centos_centos7std /dev/sda3
 
 # check the free space available on virtual disk. There should be some free blocks to add.
 #   In this example, there are 2048 free blocks to add
 #   In this example, the outer container is named /dev/mapper/centos_centos7std-root
-vgdisplay centos_centos7std | grep "Free"
+sudo vgdisplay centos_centos7std | grep "Free"
 
 # extend the outer container by XXXX blocks
 
