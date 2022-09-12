@@ -35,7 +35,10 @@ do
 	# gotta have full path in here
 	cd "$(dirname "${PATH_TO_REPOS}"/"${ITER_PATH_TO_GIT_DIR}")" || exit 2
 	echo "${ITER_PATH_TO_GIT_DIR}"
+	git config core.fileMode false
 	git pull
+
+	
 
 	# only do the status and push if it is one of my repos, skip if not
 	if [[ "${ITER_PATH_TO_GIT_DIR}" != *"third_party"* ]]; then
