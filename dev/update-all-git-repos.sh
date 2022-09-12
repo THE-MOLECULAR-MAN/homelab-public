@@ -17,7 +17,16 @@ fi
 
 cd "$PATH_TO_REPOS" || exit 3
 
+# delete thumbnails
 find . -type f -name '.DS_Store' -delete
+
+# mark git scripts as executable
+find . -type f \(  -name 'pre-commit' -o -name 'prepare-commit-msg' -o -name 'commit-msg' \) -exec chmod u+x {} \;
+
+# mark .sh files as executable
+# the \+ is a lot faster than the \; in this situation
+find . -type f -name '*.sh' -exec chmod u+x {} \+
+
 
 echo "Searching for git repositories..."
 # next line is touchy, be cautious about making changes
