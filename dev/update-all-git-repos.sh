@@ -17,6 +17,8 @@ fi
 
 cd "$PATH_TO_REPOS" || exit 3
 
+find . -type f -name '.DS_Store' -delete
+
 echo "Searching for git repositories..."
 # next line is touchy, be cautious about making changes
 find . -type d -name '.git' -print0 -maxdepth 3 | while read -r -d $'\0' ITER_PATH_TO_GIT_DIR
@@ -28,7 +30,7 @@ do
 
 	# only do the status and push if it is one of my repos, skip if not
 	if [[ "${ITER_PATH_TO_GIT_DIR}" != *"third_party"* ]]; then
-  		git status
+  		git status --ignored
 		git push
 	fi
 	
