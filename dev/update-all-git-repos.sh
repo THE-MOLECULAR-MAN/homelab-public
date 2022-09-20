@@ -42,7 +42,7 @@ do
 
 	# only do the status and push if it is one of my repos, skip if not
 	if [[ "${ITER_PATH_TO_GIT_DIR}" != *"third_party"* ]]; then
-  		git status --ignored
+  		git status #--ignored
 		git push
 	fi
 	
