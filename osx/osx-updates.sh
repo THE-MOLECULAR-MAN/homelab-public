@@ -106,6 +106,7 @@ pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -
 #  export LDFLAGS="-L/usr/local/opt/icu4c/lib"
 #  export CPPFLAGS="-I/usr/local/opt/icu4c/include"
 
+# script to uninstall NodeJS:
 #curl -ksO https://gist.githubusercontent.com/nicerobot/2697848/raw/uninstall-node.sh
 #chmod +x ./uninstall-node.sh
 #./uninstall-node.sh
