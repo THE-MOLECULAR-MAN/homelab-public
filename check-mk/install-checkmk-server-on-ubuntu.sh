@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tim H 2022
-# Installs the Check-MK server on Ubuntu 20.04
+# Installs the Check-MK server Free Enterprise edition on Ubuntu 20.04
 # https://checkmk.com/download?method=cmk&edition=cre&version=2.1.0p9&platform=ubuntu&os=focal&type=cmk
 # https://docs.checkmk.com/latest/en/install_packages_debian.html#signed
 # https://checkmk.com/download/archive#checkmk-2.0.0

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tim H 2022
-# install checkmk on CentOS 7
+# install CheckMK Free Enterprise Server on CentOS 7
 #
 # References: 
 #   https://aventistech.com/kb/checkmk-raw-to-enterprise-free-edition/
