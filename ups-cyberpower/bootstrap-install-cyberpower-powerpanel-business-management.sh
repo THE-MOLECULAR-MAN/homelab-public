@@ -17,25 +17,37 @@
 # different site for downloading
 # https://www.cyberpower.com/global/en/product/sku/powerpanel_business_for_linux#downloads
 
-PPB_MANAGEMENT_INSTALLER_URL="https://www.cyberpower.com/global/en/File/GetFileSampleByType?fileId=SU-20040001-06&fileType=Download%20Center&fileSubType=FileOriginal"
-PPB_MANAGEMENT_INSTALLER_FILENAME="CyberPower_PPB_Mgt_Linux_64bit_v4.7.0.sh"
-PPB_MANAGEMENT_INSTALLER_MD5="F29FEA0F78A5C62905896F0BE23D578C"
+sudo apt-get update
+sudo apt-get -y install expect \
+    curl \
+    ca-certificates \
+    libgusb2 \
+    libusb-1.0-0 \
+    usb.ids \
+    usbutils \
+    --no-install-recommends
 
-wget -O "$PPB_MANAGEMENT_INSTALLER_FILENAME" "$PPB_MANAGEMENT_INSTALLER_URL"
+# URL for version: 4.8.6 - last updated Sept 30, 2022
+PPB_INSTALLER_URL="https://www.cyberpower.com/global/en/File/GetFileSampleByType?fileId=SU-20040001-06&fileType=Download%20Center&fileSubType=FileOriginal"
+PPB_INSTALLER_FILENAME="CyberPower_PowerPanel_Business_Linux_64bit_Management-v4.8.6.sh"
+#PPB_INSTALLER_URL="http://installers.int.butters.me:8081/$PPB_INSTALLER_FILENAME"
+PPB_INSTALLER_MD5="4D92C87C6FEC703464CA689D1A6F2999"
 
-echo "$PPB_MANAGEMENT_INSTALLER_MD5  $PPB_MANAGEMENT_INSTALLER_FILENAME" > \
-    "$PPB_MANAGEMENT_INSTALLER_FILENAME.md5"
+wget -O "$PPB_INSTALLER_FILENAME" "$PPB_INSTALLER_URL"
+
+echo "$PPB_INSTALLER_MD5  $PPB_INSTALLER_FILENAME" > \
+    "$PPB_INSTALLER_FILENAME.md5"
 
 set -e
-md5sum --check "$PPB_MANAGEMENT_INSTALLER_FILENAME.md5"
+md5sum --check "$PPB_INSTALLER_FILENAME.md5"
 set +e
 
 # mark it as executable
-chmod 500 "./$PPB_MANAGEMENT_INSTALLER_FILENAME"
+chmod 500 "./$PPB_INSTALLER_FILENAME"
 
 # It's an interactive install, not sure if there are flags that can be 
 # passed or an answers file
-sudo ./$PPB_MANAGEMENT_INSTALLER_FILENAME
+autoexpect sudo ./$PPB_INSTALLER_FILENAME
 # Enter 9 times, Acccept the license (1), 
 #   Default install directory (Enter), 
 #   1 (Management component)
