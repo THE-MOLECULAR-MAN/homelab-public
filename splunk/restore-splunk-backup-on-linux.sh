@@ -19,10 +19,10 @@ du -sh "$BACKUP_FULL_PATH"
 # assume restoring it will take 3-5x as much space as the tarball
 df -h "/opt/splunk"
 
-cd $(dirname "$BACKUP_FULL_PATH") || exit 1
+cd "$(dirname $BACKUP_FULL_PATH)" || exit 1
 
 # verify integrity of backup with hashsum:
-sha256sum --check *.sha256
+sha256sum --check ./*.sha256
 
 # rename original splunk directory to retain it just in case
 mv /opt/splunk /opt/splunk.old

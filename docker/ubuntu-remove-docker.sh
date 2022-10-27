@@ -1,3 +1,5 @@
+#!/bin/bash
+# Tim H 2022
 # https://docs.ansible.com/ansible/latest/collections/community/docker/index.html
 
 # test if docker is installed

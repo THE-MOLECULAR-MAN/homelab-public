@@ -120,7 +120,7 @@ sudo systemctl restart iptables
 #iptables save > "$HOME/iptables-backup.ipv4"
 
 
-sudo iptables --list-rules > "$HOME/iptables-backup.ipv4"
+sudo iptables --list-rules | sudo tee "$HOME/iptables-backup.ipv4"
 
 #firewall-cmd
 

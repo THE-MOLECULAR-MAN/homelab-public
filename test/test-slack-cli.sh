@@ -14,7 +14,9 @@ THIS_SCRIPT_NAME=$(basename "$0")                 # can't use the --suffix since
 
 # source must come after the variable definitions?
 # can't combine into one line, only one file per source
+# shellcheck disable=SC1091
 source .env
+# shellcheck disable=SC1091
 source common-functions.sh
 
 ################################################################################

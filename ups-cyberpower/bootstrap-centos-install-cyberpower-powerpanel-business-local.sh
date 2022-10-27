@@ -57,7 +57,7 @@
 #   TODO: add architecture check, make sure it's 64 bit, not 32 or ARM; won't
 #       work on Raspberry Pi since it's ARM
 
-cd "$HOME"
+cd "$HOME" || exit 1
 
 ##############################################################################
 # Set up - see pre-reqs above.

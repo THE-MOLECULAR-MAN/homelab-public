@@ -24,6 +24,7 @@ tail ~/.bash_profile
 
 # force immediate changes
 # TODO: make the ~ compatible where the variable isn't defined.
+# shellcheck disable=SC1090
 source ~/.bash_profile
 
 # test it to generate an easy to find event in InsightIDR event log

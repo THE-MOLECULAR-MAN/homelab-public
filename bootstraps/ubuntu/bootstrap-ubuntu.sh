@@ -3,7 +3,7 @@
 
 NEW_HOSTNAME="new-appliance"
 DOMAIN_TO_JOIN="INT.REDACTED.ME" # must be in all caps
-DOMAIN_ADMIN_USERNAME="jdoe.adm"    # domain admin used to join the domain
+# DOMAIN_ADMIN_USERNAME="jdoe.adm"    # domain admin used to join the domain
 
 NEW_FQDN="$NEW_HOSTNAME.$DOMAIN_TO_JOIN"
 

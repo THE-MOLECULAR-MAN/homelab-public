@@ -22,10 +22,10 @@ esxcli network ip interface ipv4 get
 ping 10.0.1.11                  # basic network routing test
 nc -v 10.0.1.11 389             # port open test
 cat /etc/resolv.conf            # see where I get my DNS from
-#nslookup -version               # doesn't  work on ESX busybox version, only on OS X and regular Linux
-nslookup dc02.int.redacted.me    # test DNS lookup of domain controller
+#nslookup -version              # doesn't  work on ESX busybox version, only on OS X and regular Linux
+nslookup dc02.int.redacted.me   # test DNS lookup of domain controller
 nslookup dc02                   # intentionally leaving out the domain to test DNS search settings
-nslookup $(hostname)            # verify that this current host has a DNS entry
+nslookup "$(hostname)"          # verify that this current host has a DNS entry
 # verify PTR record (reverse DNS) for this host too, the IP is in reverse order:
 nslookup -debug -type=ptr 13.1.0.10.in-addr.arpa    # this works on ESXi AND OS X
 

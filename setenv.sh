@@ -5,4 +5,4 @@
 grep -v '^#' .env
 
 # Export env vars
-export $(grep -v '^#' .env | xargs)
+export "$(grep -v '^#' .env | xargs)"

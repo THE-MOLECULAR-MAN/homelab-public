@@ -25,6 +25,7 @@ declare -a LIST_OF_SYSTEMS=("nes" "snes" "n64" "genesis" "gb" "gba" \
 set -e
 
 # Iterate the string array using for loop
+# shellcheck disable=SC2068
 for ITER_SYSTEM_NAME in ${LIST_OF_SYSTEMS[@]}; do
     echo "Copying $ITER_SYSTEM_NAME..."
     rsync -a --update --info=progress2 "$REMOTE_POINT/$ITER_SYSTEM_NAME" "$LOCAL_POINT/$ITER_SYSTEM_NAME"

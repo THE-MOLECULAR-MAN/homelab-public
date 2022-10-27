@@ -38,6 +38,7 @@ fi
 
 log () {
 	# formatted log output including timestamp
+   # shellcheck disable=SC2145
 	echo -e "[bootstrap] $(date)\t $@"
 }
 

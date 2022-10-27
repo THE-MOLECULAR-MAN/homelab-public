@@ -35,7 +35,7 @@ EOF
 # send a message to Slack
 send_slack_notification() {
     # uses Rapid7's InsightConnect webhook, not Slack's direct webhook
-    friendlier_output=$(generate_post_data_slack_notification $*)
+    friendlier_output=$(generate_post_data_slack_notification "$*")
     curl -X POST -H "Content-Type: application/json; charset=utf-8" \
         --data "$friendlier_output" \
         "$SLACK_NOTIFICATION_WEBHOOK_URL"

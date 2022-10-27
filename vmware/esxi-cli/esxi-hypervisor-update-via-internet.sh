@@ -58,7 +58,8 @@ esxcli software profile update --profile="$LATEST_PROFILE" --depot https://hostu
 # TERM=xterm esxtop
 
 # see if the update is still running:
-ps -Tcgi | grep "esxcli software profile update"
+# ps -Tcgi | grep "esxcli software profile update"
+pgrep "esxcli software profile update"
 
 # disable maintenance mode so VMs will come back up on reboot
 esxcli system maintenanceMode set --enable false

@@ -13,10 +13,13 @@ brew link ansible-lint
 brew link ansible
 brew link six
 
+# intentional, don't want to expand $PATH:
+# shellcheck disable=SC2016
 echo 'export PATH="/usr/local/sbin:$PATH"' >> ~/.bash_profile
 
-# this was the nuclear option but it fixed the issue ansible Error: Permission denied @ apply2files - /usr/local/lib/docker/cli-plugins
-sudo chown -R $(whoami):admin /usr/local/* \
-&& sudo chmod -R g+rwx /usr/local/*
+# this was the nuclear option but it fixed the issue ansible 
+# Error: Permission denied @ apply2files - /usr/local/lib/docker/cli-plugins
+sudo chown -R "$(whoami):admin" /usr/local/*
+sudo chmod -R g+rwx /usr/local/*
 
 brew cleanup
