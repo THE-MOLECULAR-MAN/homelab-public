@@ -51,6 +51,7 @@ LATEST_PROFILE=$(esxcli software sources profile list --depot=https://hostupdate
 # the standard version, no the no-tools version.
 # this command blocks until the update is done
 esxcli software profile update --profile="$LATEST_PROFILE" --depot https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
+# if failures occur here it's often because some of the instsalled VIBs don't support the new ESX version
 
 # the ESX equivalent of "top" to watch the most CPU-intensive processes
 # https://kb.vmware.com/s/article/2001448
