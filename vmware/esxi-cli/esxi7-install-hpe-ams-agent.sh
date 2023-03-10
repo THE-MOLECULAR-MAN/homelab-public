@@ -15,7 +15,7 @@
 # enable SSH access to the ESXi hypervisor first
 # make sure it is in maintenence mode and all VMs are powered off
 
-# see if it is installed or running:
+# see if it the "package" is installed.
 esxcli software component list | grep amsdComponent
 
 # note: the absolute path is required, not relative path
@@ -42,6 +42,7 @@ esxcli software component list | grep amsdComponent # should list "amsdComponent
 # https://support.hpe.com/hpesc/public/swd/detail?swItemId=MTX_4eee0f5a257e4c01a489046663#tab3
 # restarting AMS on ESXi: 
 # /etc/init.d/ams.sh restart # doesn't work, no script there named that
+# test if the service is running. For some reason it is NOT listed in the GUI.
 /etc/init.d/amsd status
 # it wasn't running after reboot, i had to manually start it. it wouldn't start
 # amsd-smarev is not running 1626381697 1
