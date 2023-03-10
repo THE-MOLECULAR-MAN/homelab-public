@@ -14,15 +14,14 @@
 # setting power settings in vSphere:
 # 	ESXi Host / Configure / Hardware:Overview - SCROLL TO THE BOTTOM / Edit Power Policy
 # Must enable the following setting in iLO:
-# 	IPMI/DCMI over LAN: Enabled
+# 	iLO > Security > IPMI/DCMI over LAN: Enabled
+# 	https://medium.com/@what_if/automate-enabling-of-ipmi-over-lan-access-on-hpe-ilo-7d9d8c55b83e
 
 # References:
 # 	https://docs.oracle.com/cd/E19464-01/820-6850-11/IPMItool.html
 # 	https://kb.vmware.com/s/article/2009169
 # 	https://docs.vmware.com/en/VMware-vSphere/7.0/com.vmware.vsphere.resmgmt.doc/GUID-D247EC2C-92C5-4B9B-9305-39099F30D3B5.html
 # 	https://medium.com/@what_if/automate-enabling-of-ipmi-over-lan-access-on-hpe-ilo-7d9d8c55b83e
-
-
 
 # Settings for the HPE iLO NIC:
 DEDICATED_ILO_IP="10.0.1.x"
@@ -46,7 +45,9 @@ ipmitool -I lanplus -H "$DEDICATED_ILO_IP" -U "$ILO_USERNAME" -P "$ILO_PASSWORD"
 ##############################################################################
 # Test UNauthenticated API call to iLO's RESTful API (TCP 443/https)
 ##############################################################################
-curl --insecure "https://$DEDICATED_ILO_IP/xmldata?item=All" #| xmllint --format
+# brew install xmlstarlet
+curl --insecure "https://$DEDICATED_ILO_IP/xmldata?item=All"
+#| xmllint --format
 
 
 
