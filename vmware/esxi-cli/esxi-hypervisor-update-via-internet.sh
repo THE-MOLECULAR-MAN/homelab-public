@@ -1,6 +1,6 @@
 #!/bin/bash
 # Tim H 2022
-# Update ESXi hypervisor via internet
+# Update VMware ESXi hypervisor 7 and 8 via internet
 # Use a screen session on a jump host
 
 # references:
@@ -9,6 +9,10 @@
 
 #   list of versions and build numbers and release dates:
 #       https://kb.vmware.com/s/article/2143832
+
+# start a new screen session on JUMP box, not hypervisor:
+screen
+
 
 # see current version
 vmware -v
@@ -39,18 +43,24 @@ echo "done shutting down VMs"
 # list running tasks
 vim-cmd vimsvc/task_list
 
+
 # list depot packages, verify connection and URL
 # takes about 40 seconds to run
 # esxcli software sources profile list --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
 LATEST_PROFILE=$(esxcli software sources profile list --depot=https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml | grep '\-standard' | tail -n1 | cut -d ' ' -f1)
 
+# display for debugging:
+# echo "$LATEST_PROFILE"
+
 # this command takes a WHILE to run - 5-10 minutes
 # maybe consider adding a beep afterward?
 # TODO: consider addding && disable main && reboot, maybe some sleeps too
 # the last item in the previous command is usually the latest, but go for
-# the standard version, no the no-tools version.
+# the 'standard' version, not the 'no-tools' version.
 # this command blocks until the update is done
 esxcli software profile update --profile="$LATEST_PROFILE" --depot https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
+# manual version for 2/13/2023:
+# esxcli software profile update --profile=ESXi-8.0a-20842819-standard --depot https://hostupdate.vmware.com/software/VUM/PRODUCTION/main/vmw-depot-index.xml
 # if failures occur here it's often because some of the instsalled VIBs don't support the new ESX version
 
 # the ESX equivalent of "top" to watch the most CPU-intensive processes
