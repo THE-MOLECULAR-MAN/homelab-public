@@ -1,5 +1,6 @@
 #!/bin/bash
 # Tim H 2019-2021
+#	This has largely been replaced by my Ansible playbook
 #   
 #   Script to run a variety of updates on an OS X system
 #   Includes: OS X operating system updates, brew updates, pip3 updates
@@ -18,18 +19,18 @@
 # bomb out if any errors
 set -e
 
-THIS_SCRIPT_NAME=$(basename "$0")                 # can't use the --suffix since it isn't supported in OS X like it is in Linux
-export LOGFILE="$HOME/history-$THIS_SCRIPT_NAME.log"         # filename of file that this script will log to. Keeps history between runs.
+# THIS_SCRIPT_NAME=$(basename "$0")                 # can't use the --suffix since it isn't supported in OS X like it is in Linux
+# export LOGFILE="$HOME/history-$THIS_SCRIPT_NAME.log"         # filename of file that this script will log to. Keeps history between runs.
 
 # source must come after the variable definitions?
 # can't combine into one line, only one file per source
 # shellcheck disable=SC1091
-source ../.env
+# source ../.env
 # shellcheck disable=SC1091
-source ../common-functions.sh
+# source ../common-functions.sh
 
 # output to the log file instead of the screen
-setup_logging
+# setup_logging
 
 
 restart_Signal () {
@@ -45,9 +46,9 @@ restart_Signal () {
 ################################################################################
 
 # start a log so I know it ran
-log "========= START ============="
+# log "========= START ============="
 
-send_slack_notification "Starting updates on $(hostname)"
+# send_slack_notification "Starting updates on $(hostname)"
 
 # have to define path since this runs as cron and the path variable doesn't work for some of the commands
 PATH="$HOME/Google Drive File Stream/My Drive/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/Library/Python/2.7/bin:/Applications/VMware Fusion.app/Contents/Public"
@@ -127,5 +128,5 @@ pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1  | xargs -
 # restart affect applications
 restart_Signal
 
-send_slack_notification "Finished updates on $(hostname)"
-log "==== SCRIPT ENDED SUCCESSFULLY ====="
+# send_slack_notification "Finished updates on $(hostname)"
+# log "==== SCRIPT ENDED SUCCESSFULLY ====="
