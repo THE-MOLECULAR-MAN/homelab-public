@@ -1,0 +1,122 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rapid7-monitor
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - namespaces
+  - nodes
+  - pods
+  - services
+  - serviceaccounts
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  resourceNames:
+  - rapid7-cluster-id
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+- apiGroups:
+  - apps
+  - extensions
+  resources:
+  - deployments
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: rapid7-monitor
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rapid7-monitor
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rapid7-monitor
+subjects:
+- kind: ServiceAccount
+  name: rapid7-monitor
+  namespace: default
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rapid7
+  labels:
+    name: rapid7
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: rapid7-monitor
+  name: rapid7-monitor
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: rapid7-monitor
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        service: rapid7-monitor
+    spec:
+      containers:
+      - image: rapid7/kubernetes-monitor:latest
+        imagePullPolicy: IfNotPresent
+        name: kubernetes-agent
+        env:
+        - name: CLUSTER_NAME
+          value: my_cluster_name
+        - name: RAPID7_MONITOR_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rapid7-monitor
+              key: monitor-key
+        volumeMounts:
+          - name: dockersocket
+            mountPath: /var/run/docker.sock
+        resources:
+          limits:
+            memory: 2Gi
+          requests:
+            memory: 1Gi
+      volumes:
+        - hostPath:
+            path: /var/run/docker.sock
+          name: dockersocket
+      restartPolicy: Always
+      serviceAccountName: rapid7-monitor
