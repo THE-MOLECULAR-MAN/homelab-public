@@ -2,6 +2,7 @@
 # Tim H 2023
 
 # https://github.com/JavDomGom/videostego
+# only works on Linux, not MacOS
 # Installs a tool from GitHub to write secret messages into MP4 files
 # and writes a secret message into an example file, and then shows the secret
 # message
