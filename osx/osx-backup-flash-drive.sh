@@ -19,10 +19,11 @@ DISK_TO_BACKUP="/dev/disk2"
 NOW=$(date +"%Y_%m_%d_%I_%M_%p_%z")
 
 # gather the disk size, but it includes whitespce
-DISK_SIZE_WITH_WHITESPACE=$(diskutil list | grep $(basename "$DISK_TO_BACKUP") | grep 'FDisk_partition_scheme' | cut -d '*' -f2 | cut -d ' ' -f1-2)
+DISK_SIZE_WITH_WHITESPACE=$(diskutil list | grep "$(basename $DISK_TO_BACKUP)" | grep 'FDisk_partition_scheme' | cut -d '*' -f2 | cut -d ' ' -f1-2)
 
 # replace the whitespace with underscores
-DISK_SIZE_CLEAN=$(echo ${DISK_SIZE_WITH_WHITESPACE// /_})
+# DISK_SIZE_CLEAN=$(echo ${DISK_SIZE_WITH_WHITESPACE// /_})
+DISK_SIZE_CLEAN="${DISK_SIZE_WITH_WHITESPACE// /_}"
 
 # construct a non-whitespace filename that clearly describes the backup file
 BACKUP_FILE="$HOME/usb-device-full-disk-backup-$NOW-$DISK_SIZE_CLEAN.img"
@@ -49,7 +50,7 @@ md5sum "$BACKUP_FILE" > "$BACKUP_FILE.md5"
 
 # list important info about disk in text file
 rm -f "$INFO_FILE"
-sudo gdisk -l "$DISK_TO_BACKUP" > "$INFO_FILE"
+sudo gdisk -l "$DISK_TO_BACKUP" | sudo tee "$INFO_FILE"
 # df -h "$DISK_TO_BACKUP" > "$INFO_FILE"
 
 # compress the file after the fact, deletes the original
