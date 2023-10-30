@@ -8,7 +8,7 @@ sudo pacman -S --needed base-devel
 # chiaki is available via Snap, not pacman
 cd "$HOME" || exit 1
 git clone https://aur.archlinux.org/snapd.git
-cd snapd
+cd snapd || exit 2
 makepkg -si
 
 sudo systemctl enable --now snapd.socket
@@ -19,7 +19,5 @@ sudo snap install chiaki
 
 # pacman --sync --search chiaki
 
-#PSN_USERNAME="fart"
-#echo -n "$PSN_USERNAME" | base64 -e
-
-# fXxBqwTmiG0=
+# PSN_USERNAME="redacted"
+# echo -n "$PSN_USERNAME" | base64 -e
