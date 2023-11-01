@@ -4,6 +4,8 @@
 #   This script installs and runs a tool that will automatically send hundreds
 #   of friend invites for Fortnite to fellow listeners of the Get Played
 #   podcast.
+#   This script is designed to be run on MacOS and assumes you already have 
+#   node.js package manager (npm) installed.
 #
 # WARNING: running this script WILL drop you from any active Epic Games on
 # this account.
@@ -42,7 +44,7 @@ PROFILE_NAME="profile1"
 # stores the creds so you don't have to re-enter them each time
 gpbattlebus --reference "$GOOGLE_SHEET_ID" --mode auto --profile "$PROFILE_NAME" --save-profile
 
-# check in on existing invites:
+# check on existing invites:
 gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME"
 
 # show Epic usernames for people who have accepted the invite:
