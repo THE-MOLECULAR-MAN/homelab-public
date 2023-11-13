@@ -38,7 +38,7 @@ alias gpbattlebus="~/.npm/_npx/898e89c270b64674/node_modules/.bin/gpbattlebus"
 
 # get played spreadsheet ID: 1fttjmZG3ecQ5ClFkSCK9JxHmJJ5Dq7WUpxPaTQiZC0s
 GOOGLE_SHEET_ID="1fttjmZG3ecQ5ClFkSCK9JxHmJJ5Dq7WUpxPaTQiZC0s"
-PROFILE_NAME="profile1"
+PROFILE_NAME="tim"
 
 # create and save profile, auto add everyone that hasn't been invited yet
 # stores the creds so you don't have to re-enter them each time
@@ -51,4 +51,4 @@ gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME"
 gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME" | grep " │ CURRENT  │"
 
 # count the number of friends successfully added from the sheet
-gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile profile1 | grep -c " │ CURRENT  │"
+gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME" | grep -c " │ CURRENT  │"
