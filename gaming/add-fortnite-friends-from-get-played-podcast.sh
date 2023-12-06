@@ -40,15 +40,21 @@ alias gpbattlebus="~/.npm/_npx/898e89c270b64674/node_modules/.bin/gpbattlebus"
 GOOGLE_SHEET_ID="1fttjmZG3ecQ5ClFkSCK9JxHmJJ5Dq7WUpxPaTQiZC0s"
 PROFILE_NAME="tim"
 
+# login to this site first in your web browser:
+# https://www.epicgames.com/id/login
+#
 # create and save profile, auto add everyone that hasn't been invited yet
 # stores the creds so you don't have to re-enter them each time
-gpbattlebus --reference "$GOOGLE_SHEET_ID" --mode auto --profile "$PROFILE_NAME" --save-profile
+gpbattlebus --reference "$GOOGLE_SHEET_ID" --mode auto \
+    --profile "$PROFILE_NAME" --save-profile
 
 # check on existing invites:
 gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME"
 
 # show Epic usernames for people who have accepted the invite:
-gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME" | grep " │ CURRENT  │"
+gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME" | \
+    grep " │ CURRENT  │" | sort --ignore-case
 
 # count the number of friends successfully added from the sheet
-gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME" | grep -c " │ CURRENT  │"
+gpbattlebus --reference "$GOOGLE_SHEET_ID" --profile "$PROFILE_NAME" | \
+    grep -c " │ CURRENT  │"
