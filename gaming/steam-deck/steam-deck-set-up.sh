@@ -19,6 +19,13 @@ echo '# Set PATH, MANPATH, etc., for Homebrew.' >> /home/deck/.bash_profile
 echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/deck/.bash_profile
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 sudo pacman-key --init
+
+# Temporary fix required Jan 2024
+sudo vim /etc/pacman.conf
+# change SigLevel = TrustAll
+sudo pacman -S holo-keyring archlinux-keyring
+
+
 sudo pacman -S base-devel
 brew install gcc
 
@@ -26,9 +33,7 @@ cd ~/Desktop || exit 1
 wget "https://www.emudeck.com/EmuDeck.desktop"
 chmod +x EmuDeck.desktop
 
-# prepping for VPN setup:
-# https://wiki.archlinux.org/title/Openswan_L2TP/IPsec_VPN_client_setup
-sudo pacman -S networkmanager-l2tp strongswan
+# Use wire for VPN, not L2TP
 
 # last:
 sudo steamos-readonly enable
