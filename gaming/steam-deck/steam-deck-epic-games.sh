@@ -10,7 +10,8 @@ sudo steamos-readonly disable
 # https://flatpak.org/setup/Arch
 sudo pacman --noconfirm -S flatpak
 
-flatpak install flathub com.heroicgameslauncher.hgl
+# added sudo to avoid the 7+ prompts for password
+sudo flatpak install flathub com.heroicgameslauncher.hgl
 
 # create symbolic link to sdcard in user's home directory
 # SD card mount point: /dev/mmcblk0p1
