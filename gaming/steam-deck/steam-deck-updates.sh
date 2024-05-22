@@ -6,12 +6,11 @@
 # start a screen session for all this:
 screen
 
-
 sudo steamos-readonly disable
 
 sudo pacman -Syyu
 
-brew update && brew upgrade
+# brew update && brew upgrade
 # brew doctor
 
 sudo flatpak update --noninteractive --assumeyes
@@ -24,7 +23,7 @@ sudo flatpak update --noninteractive --assumeyes
 # "$HOME/.config/EmuDeck/backend/installCLI.sh"
 
 sudo steamos-update
-sudo steamos-update-os after-reboot
+# sudo steamos-update-os after-reboot
 
 sudo steamos-readonly enable
 
