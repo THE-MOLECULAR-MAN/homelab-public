@@ -22,7 +22,7 @@ cd ~/.local/share/Steam/steamapps/compatdata || exit 2
 EXTRACT_PATH=$(find ~/.local/share/Steam/steamapps/compatdata -type d -name 'PlayStationPlus' -path '*drive_c/Program Files (x86)*')
 
 # copy the file
-cp ~/Downloads/msvcr120.dll "$EXTRACT_PATH/"
+sudo cp ~/Downloads/msvcr120.dll "$EXTRACT_PATH/"
 
 # verify the file is there and has the right permissions:
 ls -lah "$EXTRACT_PATH/msvcr120.dll"
@@ -35,4 +35,3 @@ mv unidater.ini backup/
 
 # get the whole path for copy and paste for Steam Deck GUI
 echo "$EXTRACT_PATH/pspluslauncher.exe" > ~/Desktop/pslauncherpath.txt
-
