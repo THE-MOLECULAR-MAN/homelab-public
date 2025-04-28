@@ -1,6 +1,8 @@
 #!/bin/bash
 # Tim H 2022
 
+# DOES NOT WORK WITH APPLE M1
+
 # !!!!!!! THIS DOES A FACTORY RESET ON THE PHONE!!!!!!
 # !!!!!!! THIS DOES A FACTORY RESET ON THE PHONE!!!!!!
 # !!!!!!! THIS DOES A FACTORY RESET ON THE PHONE!!!!!!
@@ -138,3 +140,40 @@ fastboot getvar is-userspace
 # it does a LOT of steps and reboots the phone several times automatically
 # This tool only does Android versions that are OFFICIALLY supported by Google, so for example on the Pixel 3 it does Android 12, but does NOT support Android 13 for the Pixel 3
 # late in the process you will have to touch buttons on the phone to approve locking the bootloader
+
+
+
+####
+brew install simg2img
+
+# fails:
+cd taimen-ota-rp1a.201005.004.a1-9de3b962 || exit 1
+simg2img payload.bin system_raw.img
+
+
+cd gsi_gms_arm64-exp-TP1A.220624.014-8819323-8a77fef1 || exit 1
+simg2img system.img system_raw.img
+
+./imgtool <path-to-factory-image>/system.img extract
+
+
+wget "http://newandroidbook.com/tools/imjtool.tgz"
+# xattr -d com.apple.quarantine ./imjtool
+cd gsi_gms_arm64-exp-TP1A.220624.014-8819323-8a77fef1
+../imjtool system.img extract # extracted empty file
+
+cd taimen-ota-rp1a.201005.004.a1-9de3b962
+../imjtool payload.bin extract      # extracted successfully?
+# but this just extracts it, doesn't do anything for the phone
+
+# Unfortunately, you can't do this operation on your M1 device. Because, Android doesn't officially support the ARM version of SDK Platform tools. Only the intel version of Apple devices could be used to flash roms.
+# https://developer.android.com/tools/releases/platform-tools
+
+
+
+## attempting on Ubuntu:
+sudo apt install android-sdk    # so many unneeded "suggested" packages
+# android-sdk-build-tools
+sudo fastboot devices
+
+sudo fastboot flash system taimen-ota-rp1a.201005.004.a1-9de3b962/payload.bin
