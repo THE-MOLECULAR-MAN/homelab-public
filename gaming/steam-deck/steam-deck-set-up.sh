@@ -11,8 +11,6 @@ sudo steamos-readonly disable
 sudo systemctl start sshd 
 sudo systemctl enable sshd
 
-
-
 ######### Can do over SSH now, preferably in a screen session
 
 # install and configure Homebrew
@@ -22,15 +20,14 @@ sudo systemctl enable sshd
 # shellcheck disable=SC2016
 #echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/deck/.bash_profile
 #eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# Reinitialize and populate keyrings
+sudo rm -rf /etc/pacman.d/gnupg
 sudo pacman-key --init
-
-# Temporary fix still required April 2024
-sudo vim /etc/pacman.conf
-# change SigLevel = TrustAll
-sudo pacman --noconfirm -S holo-keyring archlinux-keyring
-
+sudo pacman-key --populate archlinux holo
 
 sudo pacman --noconfirm -S base-devel gcc screen
+
+screen -S steamdeck
 # brew install gcc
 
 cd ~/Desktop || exit 1
