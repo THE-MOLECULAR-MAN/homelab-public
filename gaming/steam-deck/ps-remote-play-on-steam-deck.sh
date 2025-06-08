@@ -3,7 +3,9 @@
 # Getting PS Remote Play running on Steam Deck
 # https://dashgamer.com/how-to-get-playstation-remote-play-on-steam-deck/
 
-sudo pacman -S --needed base-devel
+sudo pacman -Syu --needed base-devel glibc
+
+ls /usr/include/stdlib.h
 
 # chiaki is available via Snap, not pacman
 cd "$HOME" || exit 1
