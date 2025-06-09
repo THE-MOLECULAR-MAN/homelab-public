@@ -5,20 +5,17 @@
 
 # Fixing non-unique UUIDs in FreeNAS VMDK files
 
-##############################################################################
-# MACOS SIDE
-##############################################################################
-NEW_UUID=$(uuidgen | sed 's/-//g' | cut -c1-32)
-NEW_DDB_UUID=$(echo "$NEW_UUID" | sed 's/../& /g; s/ $//' | cut -c1-23)
-NEW_LONG_CONTENT_ID="$NEW_UUID"
+# ##############################################################################
+# # MACOS SIDE
+# ##############################################################################
 
-echo ""
-echo "Paste this into the ESXi CLI:"
-echo ""
-echo "export NEW_UUID=\"${NEW_UUID}\""
-echo "export NEW_LONG_CONTENT_ID=\"${NEW_LONG_CONTENT_ID}\""
-echo "export NEW_DDB_UUID=\"${NEW_DDB_UUID}\""
-echo ""
+# echo ""
+# echo "Paste this into the ESXi CLI:"
+# echo ""
+# echo "export NEW_UUID=\"${NEW_UUID}\""
+# echo "export NEW_LONG_CONTENT_ID=\"${NEW_LONG_CONTENT_ID}\""
+# echo "export NEW_DDB_UUID=\"${NEW_DDB_UUID}\""
+# echo ""
 
 
 ##############################################################################
@@ -27,16 +24,11 @@ echo ""
 # paste the output from the MacOS section above into the ESXi CLI before 
 # running this script
 
+set -e 
 VM_NAME="truenas_test1"
+VMDK_FILE="${VM_NAME}_2.vmdk"
 DATASTORE="r7-3000-raid10"
 
-# verify that the variables are set
-if [ -z "${NEW_UUID}" ] || [ -z "${NEW_LONG_CONTENT_ID}" ] || [ -z "${NEW_DDB_UUID}" ] ; then
-  echo "NEW_UUID or NEW_LONG_CONTENT_ID is not set. Please set them before running this script."
-  exit 1
-fi  
-
-VMDK_FILE="${VM_NAME}_1.vmdk"
 VMX_PATH="/vmfs/volumes/${DATASTORE}/${VM_NAME}"
 VMDK_PATH="${VMX_PATH}/${VMDK_FILE}"
 VM_ID=$(vim-cmd vmsvc/getallvms | grep "${VM_NAME}" | awk '{print $1}')
@@ -45,6 +37,16 @@ if [ ! -f "${VMDK_PATH}" ]; then
   echo "VMDK descriptor not found at ${VMDK_PATH}"
   exit 1
 fi
+
+NEW_UUID=$(od -An -N16 -tx1 /dev/urandom | sed 's/ //g' | awk 'ORS=""; 1' | sed 's/^\(.\{8\}\)\(.\{4\}\)\(.\{4\}\)\(.\{4\}\)\(.\{12\}\)$/\1\2\3\4\5/')
+NEW_DDB_UUID=$(echo "$NEW_UUID" | sed 's/../& /g; s/ $//' | cut -c1-23)
+NEW_LONG_CONTENT_ID="$NEW_UUID"
+
+# verify that the variables are set
+if [ -z "${NEW_UUID}" ] || [ -z "${NEW_LONG_CONTENT_ID}" ] || [ -z "${NEW_DDB_UUID}" ] ; then
+  echo "NEW_UUID or NEW_LONG_CONTENT_ID is not set. Please set them before running this script."
+  exit 1
+fi  
 
 # Check if the VM is powered off
 VM_POWER_STATE=$(vim-cmd vmsvc/power.getstate "${VM_ID}" | tail -n1)
