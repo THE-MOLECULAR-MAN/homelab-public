@@ -8,52 +8,44 @@
 set -e
 
 # do not run this as root, run it as the user you'll be interacting w/ docker
+sudo apt install -y ca-certificates curl gnupg lsb-release
 
-sudo apt-get update
-sudo apt-get -y remove docker docker-engine docker.io containerd runc
-
-sudo apt-get -y install ca-certificates curl gnupg lsb-release
-
-# set up docker repo here if not done already
-# my Ubuntu golden image already has it
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+
 echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-sudo apt-get update
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-echo "[Network]
-IPFoward=kernel" | sudo tee -a /etc/systemd/network/bridge.network
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
-sudo systemctl restart systemd-networkd.service
-
-sudo apt-get -y install containerd.io docker-compose-plugin
-
-sudo systemctl unmask docker
+sudo systemctl enable docker
 sudo systemctl start docker
 
-# docker-ce docker-ce-cli 
-
-# verify install:
-sudo docker run hello-world
-
-# this already exists after install, will exit with error code if run:
-# sudo groupadd docker
-
+sudo usermod -aG docker $USER
 # add current user to docker group
 sudo usermod -aG docker "$USER"
 
 # reload to apply permissions to current user
 newgrp docker
 
+# verify install:
+#sudo docker run hello-world
+
+# this already exists after install, will exit with error code if run:
+# sudo groupadd docker
+
 # verify I can issue docker commands without sudo
 docker run hello-world
 
 # set to autostart:
-sudo systemctl enable docker.service
-sudo systemctl enable containerd.service
+# sudo systemctl enable docker.service
+# sudo systemctl enable containerd.service
 
 # enable log rotation, prevent logging from filling up disk:
 # this file doesn't exist by default.
