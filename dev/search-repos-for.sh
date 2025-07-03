@@ -8,7 +8,7 @@
 cd "$HOME/source_code" || exit 1 
 
 find . -type f \
-    \( -name '*.sh' -o -name '*.py' -o -name '*.ipynb' \) \
+    \( -name '*.sh' -o -name '*.py' -o -name '*.txt' -o -name '*.ipynb' \) \
     -not -path '*.venv*' -not -path '*third_party*' \
     -exec grep -i --color=always --with-filename "$1" {} \+ | grep -v 'image/png' | cut -c1-200
 
