@@ -12,11 +12,13 @@ sudo steamosctl reload-config
 # sudo steamosctl set-max-charge-level 80
 
 # sudo pacman-key --init && sudo pacman-key --populate archlinux holo
+# installs all base OS updates
 sudo pacman -Syyu
 
 # brew update && brew upgrade
 # brew doctor
 
+# includes Plex, Chrome, Heroic Games Launcher, etc.
 sudo flatpak update --noninteractive --assumeyes
 flatpak update com.heroicgameslauncher.hgl
 

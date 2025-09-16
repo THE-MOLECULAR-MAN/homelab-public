@@ -25,7 +25,9 @@ sudo rm -rf /etc/pacman.d/gnupg
 sudo pacman-key --init
 sudo pacman-key --populate archlinux holo
 
-sudo pacman --noconfirm -S base-devel gcc screen tmux
+sudo pacman -Sy
+
+sudo pacman --noconfirm -S base-devel gcc screen tmux noto-fonts noto-fonts-extra noto-fonts-cjk
 
 screen -S steamdeck
 # brew install gcc
