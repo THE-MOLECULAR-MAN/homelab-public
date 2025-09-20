@@ -8,7 +8,7 @@
 # almost always first command:
 sudo steamos-readonly disable
 
-sudo systemctl start sshd 
+sudo systemctl start sshd
 sudo systemctl enable sshd
 
 ######### Can do over SSH now, preferably in a screen session
@@ -26,15 +26,18 @@ sudo pacman-key --init
 sudo pacman-key --populate archlinux holo
 
 sudo pacman -Sy
-
-sudo pacman --noconfirm -S base-devel gcc screen tmux noto-fonts noto-fonts-extra noto-fonts-cjk
+sudo pacman --noconfirm -S base-devel gcc screen tmux noto-fonts noto-fonts-extra noto-fonts-cjk git github-cli
 
 screen -S steamdeck
-# brew install gcc
 
 cd ~/Desktop || exit 1
 wget "https://www.emudeck.com/EmuDeck.desktop"
 chmod +x EmuDeck.desktop
+
+gh auth login
+mkdir -p ~/source_code && cd ~/source_code
+gh repo clone THE-MOLECULAR-MAN/homelab-public -- --depth=1
+gh repo clone THE-MOLECULAR-MAN/honker-private-personal 
 
 # Use wire for VPN, not L2TP
 
