@@ -26,7 +26,7 @@ sudo pacman-key --init
 sudo pacman-key --populate archlinux holo
 
 sudo pacman -Sy
-sudo pacman --noconfirm -S base-devel gcc screen tmux noto-fonts noto-fonts-extra noto-fonts-cjk git github-cli
+sudo pacman --noconfirm -S base-devel gcc screen tmux noto-fonts noto-fonts-extra noto-fonts-cjk git github-cli python-pip python-virtualenv
 
 screen -S steamdeck
 
