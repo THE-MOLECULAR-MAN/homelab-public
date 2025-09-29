@@ -20,7 +20,7 @@ sudo pacman -Syyu
 
 # includes Plex, Chrome, Heroic Games Launcher, etc.
 sudo flatpak update --noninteractive --assumeyes
-flatpak update --assumeyes --noninteractive com.heroicgameslauncher.hgl
+flatpak update --assumeyes --noninteractive com.heroicgameslauncher.hgl io.github.streetpea.Chiaki4deck
 
 # sudo flatpak install --noninteractive --assumeyes tv.plex.PlexHTPC tv.plex.PlexDesktop
 

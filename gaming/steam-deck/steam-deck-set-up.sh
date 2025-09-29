@@ -30,6 +30,9 @@ sudo pacman --noconfirm -S base-devel gcc screen tmux noto-fonts noto-fonts-extr
 
 screen -S steamdeck
 
+# yes, sudo is needed here otherwise it prompts you like 10+ times
+sudo flatpak install --assumeyes --noninteractive com.heroicgameslauncher.hgl io.github.streetpea.Chiaki4deck
+
 cd ~/Desktop || exit 1
 wget "https://www.emudeck.com/EmuDeck.desktop"
 chmod +x EmuDeck.desktop
