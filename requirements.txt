@@ -9,3 +9,4 @@ pipreqs
 pandas==2.2.3
 pyspark==3.5.5
 timeout_decorator==0.5.0
+wheel

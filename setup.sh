@@ -2,6 +2,12 @@
 # Tim H 2025
 
 set -e # bail on error
+echo "Starting setup script for homelab-public..."
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd "$SCRIPT_DIR" || exit 1
+
+
 git config --global core.fileMode true
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -37,3 +43,6 @@ fi
 
 source .venv/bin/activate
 pip install --quiet --upgrade -r requirements.txt
+deactivate
+
+echo "Successfully finished setup script for homelab-public."
