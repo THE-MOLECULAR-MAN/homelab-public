@@ -34,18 +34,23 @@ find . -maxdepth 3 -mindepth 2 -type d -name '.git' -print0  | while read -r -d 
 do
 	# gotta have full path in here
 	cd "$(dirname "${PATH_TO_REPOS}"/"${ITER_PATH_TO_GIT_DIR}")" || exit 2
-	echo "${ITER_PATH_TO_GIT_DIR}"
+	
 	# git config core.fileMode true
-	gh repo sync
+	# gh repo sync
 	# git pull
+	
 
 	
 
 	# # only do the status and push if it is one of my repos, skip if not
-	# if [[ "${ITER_PATH_TO_GIT_DIR}" != *"third_party"* ]]; then
-  	# 	git status #--ignored
-	# 	git push
-	# fi
+	if [[ "${ITER_PATH_TO_GIT_DIR}" != *"third_party"* ]]; then
+		echo "${ITER_PATH_TO_GIT_DIR}"
+		gh repo sync
+  		#git status #--ignored
+		#git push
+		echo -e "\n\n"
+	fi
+	
 	
 done
 
