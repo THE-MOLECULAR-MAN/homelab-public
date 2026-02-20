@@ -31,8 +31,8 @@ generate_post_data_body_icon()
         "status": 1,
         "serviceType": "jsonRPC",
         "serviceSettings": {
-            "url": "https://us.platform.insight.rapid7.com/1/webhooks/REDACTED",
-            "authorization": "basic asdf",
+            "url": "https://REDACTED",
+            "authorization": "basic REDACTED",
             "requireValidSslCertificate": true
         },
         "subscribeToEventTypes": {
@@ -100,7 +100,7 @@ generate_post_data_body2()
        },
        "jsonrpc": "2.0",
        "method": "sendTestPushEvent",
-       "id": "ad12cb61-52b3-4209-a87a-93a8530d91cb"
+       "id": "REDACTED"
   }  
 
 EOF
@@ -129,7 +129,7 @@ generate_post_data_body_slack()
         "status": 1,
         "serviceType": "jsonRPC",
         "serviceSettings": {
-            "url": "https://hooks.slack.com/services/REDACTED",
+            "url": "https://REDACTED",
             "authorization": "basic asdf",
             "requireValidSslCertificate": true
         },
