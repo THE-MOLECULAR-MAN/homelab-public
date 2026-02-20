@@ -11,7 +11,7 @@ find . \
     -not -path '*.venv*' \
     -not -path '*third_party*' \
     -type f \
-    \( -name '*.sh' -o -name '*.py' -o -name '*.txt' -o -name '*.ipynb'  -o -name '*.ps1' \) \
+    \( -iname '*.sh' -o -iname '*.py' -o -iname '*.txt' -o -iname '*.ipynb' -o -iname '*.ps1' -o -iname '*.md' \) \
     -exec grep -i --color=always --with-filename "$1" {} \+ | grep -v 'image/png' | cut -c1-200
 
 # for troubleshooting:
