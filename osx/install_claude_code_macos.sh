@@ -1,9 +1,12 @@
+# Claude code instructions for non-technical teams
+
 ##############################################################################
 # Installing Claude Code on MacOS
 ##############################################################################
 curl -fsSL https://claude.ai/install.sh | bash
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
-  
+
+# verify that claude code is installed correctly
 claude --version
 
 ##############################################################################
@@ -28,8 +31,19 @@ claude init
 ##############################################################################
 # An even better way to structure projects
 ##############################################################################
+# Put them in Google Drive so they get backed up and are accessible from
+# anywhere, and also so you can easily share them with collaborators
+# by sharing the folder in Google Drive
+#
+# You have to have Google Drive for Desktop installed and running 
+# on your Mac for this to work
+cd "~/Google Drive/My Drive"
+mkdir -p "Claude Code Projects"
+cd "Claude Code Projects"
 
-
+mkdir -p project1
+cd project1
+claude init
 
 ##############################################################################
 # Making fancier apps with Claude Code - installing dependencies
@@ -39,13 +53,13 @@ claude init
 # xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# checking that Homebrew is installed correctly
+# check that Homebrew is installed correctly
 brew --version
 
-# Installing NodeJS and npm
+# Install NodeJS and npm
 brew install node
 
-# checking that NodeJS and npm are installed correctly
+# check that NodeJS and npm are installed correctly
 node --version
 npm --version
 
