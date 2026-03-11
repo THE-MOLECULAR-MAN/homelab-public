@@ -12,18 +12,19 @@ claude --version
 ##############################################################################
 # Creating your first Claude Code project
 ##############################################################################
-mkdir -p ~/example_claude_project
-cd ~/example_claude_project
+cd
+mkdir example_claude_project
+cd example_claude_project
 claude init
 
 ##############################################################################
 # a better way to structure Claude projects
 ##############################################################################
-mkdir -p ~/Claude_Code_Projects/
+mkdir ~/Claude_Code_Projects/
 cd ~/Claude_Code_Projects/
 
 # creating a new project:
-mkdir -p project1
+mkdir project1
 cd project1
 claude init
 
@@ -38,10 +39,10 @@ claude init
 # You have to have Google Drive for Desktop installed and running 
 # on your Mac for this to work
 cd "~/Google Drive/My Drive"
-mkdir -p "Claude Code Projects"
+mkdir "Claude Code Projects"
 cd "Claude Code Projects"
 
-mkdir -p project1
+mkdir project1
 cd project1
 claude init
 
@@ -63,3 +64,14 @@ brew install node
 node --version
 npm --version
 
+
+##############################################################################
+# Totally optional - installing some other tools that are nice to 
+# have for building apps with Claude Code
+##############################################################################
+# iTerm2 is a better terminal than the default Mac Terminal
+brew install --cask iterm2
+
+# Download videos from YouTube and many other sites:
+brew install yt-dlp
+yt-dlp "https://www.youtube.com/watch?v=oHg5SJYRHA0"
