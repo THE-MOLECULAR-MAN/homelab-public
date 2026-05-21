@@ -26,7 +26,17 @@ find . ! -path '*.git*' ! -path '*.venv*' ! -path '*third_party*' ! -path '*__py
 
 # mark .sh files as executable
 # the \+ is a lot faster than the \; in this situation
-gfind . -type f ! -executable ! -path '*.venv*' \( -name '*.sh' -o -name '*.zsh' \) -exec chmod u+x {} \+
+echo "Marking .sh and .zsh files as executable..."
+gfind . -type f \
+	! -executable \
+	! -path '*.venv*' \
+	! -path '*.git*' \
+	! -path '*.claude*' \
+	! -path '*third_party*' \
+	! -path '*\dataiku\*' \
+	! -path '*.vscode*' \
+	! -path '*.ruff_cache*' \
+	\( -name '*.sh' -o -name '*.zsh' \) -print -exec chmod u+x {} \+
 
 echo "Searching for git repositories..."
 # next line is touchy, be cautious about making changes
