@@ -33,7 +33,7 @@ gfind . -type f \
 	! -path '*.git*' \
 	! -path '*.claude*' \
 	! -path '*third_party*' \
-	! -path '*\dataiku\*' \
+	! -path '*/dataiku/*' \
 	! -path '*.vscode*' \
 	! -path '*.ruff_cache*' \
 	\( -name '*.sh' -o -name '*.zsh' \) -print -exec chmod u+x {} \+
