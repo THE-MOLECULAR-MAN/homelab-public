@@ -46,11 +46,53 @@ do
 	cd "$(dirname "${PATH_TO_REPOS}"/"${ITER_PATH_TO_GIT_DIR}")" || exit 2
 
 	echo -e "\n\n=== Syncing repo: $ITER_PATH_TO_GIT_DIR ===\n"
-	# quietly sync, do not display anything if sync was successful
-	if ! gh repo sync > /dev/null; then
-		echo "Error syncing: ${ITER_PATH_TO_GIT_DIR}"
+
+	# fetch all remotes/branches and prune remote-tracking refs that no longer exist
+	if ! git fetch --all --prune --quiet; then
+		echo "Error fetching: ${ITER_PATH_TO_GIT_DIR}"
 		git status # --ignored
 	fi
+
+	CURRENT_BRANCH="$(git symbolic-ref --short HEAD 2>/dev/null)"
+
+	# fast-forward every local branch that has a live upstream.
+	# the currently checked-out branch is updated with a plain merge;
+	# every other branch is updated via a direct fetch-into-ref so the
+	# working tree is never switched away from CURRENT_BRANCH.
+	while IFS=' ' read -r ITER_BRANCH ITER_REMOTE ITER_UPSTREAM
+	do
+		if [ -z "$ITER_UPSTREAM" ]; then
+			continue
+		fi
+		# skip upstreams that no longer exist (remote branch was deleted);
+		# those are handled by the "gone" cleanup step below
+		if ! git rev-parse --verify -q "$ITER_UPSTREAM" > /dev/null; then
+			continue
+		fi
+
+		if [ "$ITER_BRANCH" = "$CURRENT_BRANCH" ]; then
+			if ! git merge --ff-only -q "$ITER_UPSTREAM"; then
+				echo "Could not fast-forward ${ITER_BRANCH} from ${ITER_UPSTREAM} (local changes or diverged history)"
+			fi
+		else
+			ITER_REMOTE_BRANCH="${ITER_UPSTREAM#"${ITER_REMOTE}"/}"
+			if ! git fetch -q "$ITER_REMOTE" "${ITER_REMOTE_BRANCH}:${ITER_BRANCH}"; then
+				echo "Could not fast-forward ${ITER_BRANCH} from ${ITER_UPSTREAM} (diverged history)"
+			fi
+		fi
+	done < <(git for-each-ref --format='%(refname:short) %(upstream:remotename) %(upstream:short)' refs/heads/)
+
+	# delete local branches whose upstream was deleted on the remote
+	# (local-only branches with no upstream are left untouched).
+	# uses a safe delete so branches with unmerged local commits are kept.
+	git branch -vv | sed 's/^\* /  /' | awk '/: gone]/{print $1}' | while read -r ITER_GONE_BRANCH
+	do
+		if git branch -d "$ITER_GONE_BRANCH" 2> /dev/null; then
+			echo "Deleted local branch (remote branch was deleted): ${ITER_GONE_BRANCH}"
+		else
+			echo "Skipped deleting ${ITER_GONE_BRANCH}: has commits not merged upstream (remote branch was deleted). Remove manually with 'git branch -D ${ITER_GONE_BRANCH}' if intended."
+		fi
+	done
 
 	git stash list
 
