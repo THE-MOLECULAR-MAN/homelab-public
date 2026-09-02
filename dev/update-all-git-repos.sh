@@ -26,7 +26,22 @@ find . ! -path '*.git*' ! -path '*.venv*' ! -path '*third_party*' ! -path '*__py
 
 # mark .sh files as executable
 # the \+ is a lot faster than the \; in this situation
-echo "Marking .sh and .zsh files as executable..."
+# Build the list of shell files git ITSELF records as non-executable (index mode
+# 100644). Git tracks the executable bit, so "helpfully" chmod +x'ing one of these
+# is a real content change: it leaves the repo permanently dirty and can block the
+# fast-forward merges below on the next run. Verified live 2026-09-02:
+# ai-studio's tools/fullperson_run_render_on_host.sh is tracked 100644.
+GIT_NONEXEC_LIST="$(mktemp -t nonexec)"
+trap 'rm -f "$GIT_NONEXEC_LIST"' EXIT
+while IFS= read -r -d '' ITER_GIT_DIR
+do
+	ITER_REPO_DIR="$(dirname "$ITER_GIT_DIR")"
+	( cd "$ITER_REPO_DIR" 2>/dev/null || exit 0
+	  git ls-files -s -- '*.sh' '*.zsh' 2>/dev/null \
+	    | awk -v r="$ITER_REPO_DIR" '$1=="100644"{sub(/^[^\t]*\t/,""); print r"/"$0}' )
+done < <(find . -maxdepth 4 -mindepth 2 -type d -name '.git' ! -path './third_party/*' ! -path './dataiku_repos/*' -print0) >> "$GIT_NONEXEC_LIST"
+
+echo "Marking .sh and .zsh files as executable (skipping $(wc -l < "$GIT_NONEXEC_LIST" | tr -d ' ') git-tracked non-executable file(s))..."
 gfind . -type f \
 	! -executable \
 	! -path '*.venv*' \
@@ -36,14 +51,20 @@ gfind . -type f \
 	! -path './dataiku_repos/*' \
 	! -path '*.vscode*' \
 	! -path '*.ruff_cache*' \
-	\( -name '*.sh' -o -name '*.zsh' \) -print -exec chmod u+x {} \+
+	\( -name '*.sh' -o -name '*.zsh' \) -print \
+	| grep -vxF -f "$GIT_NONEXEC_LIST" \
+	| while IFS= read -r ITER_SH_FILE; do chmod u+x "$ITER_SH_FILE" && echo "$ITER_SH_FILE"; done
 
 echo "Searching for git repositories..."
 # next line is touchy, be cautious about making changes
 find . -maxdepth 4 -mindepth 2 -type d -name '.git' ! -path './third_party/*' ! -path './dataiku_repos/*' -print0 | while read -r -d $'\0' ITER_PATH_TO_GIT_DIR
 do
 	# gotta have full path in here
-	cd "$(dirname "${PATH_TO_REPOS}"/"${ITER_PATH_TO_GIT_DIR}")" || exit 2
+	# `continue`, never `exit`: this while-loop runs in a subshell (it is on the
+	# right of a pipe), so `exit` would kill the loop and SILENTLY SKIP EVERY
+	# REMAINING REPO while the script still printed "finished successfully" --
+	# the opposite of this script's own stated intent above.
+	cd "$(dirname "${PATH_TO_REPOS}"/"${ITER_PATH_TO_GIT_DIR}")" || { echo "Could not cd into ${ITER_PATH_TO_GIT_DIR}, skipping"; continue; }
 
 	echo -e "\n\n=== Syncing repo: $ITER_PATH_TO_GIT_DIR ===\n"
 
@@ -85,15 +106,33 @@ do
 	# delete local branches whose upstream was deleted on the remote
 	# (local-only branches with no upstream are left untouched).
 	# uses a safe delete so branches with unmerged local commits are kept.
-	git branch -vv | sed 's/^\* /  /' | awk '/: gone]/{print $1}' | while read -r ITER_GONE_BRANCH
+	# `sed -E 's/^[*+] /  /'` -- git marks the CURRENT branch with '*' but a branch
+	# checked out in a WORKTREE with '+'. The old pattern stripped only '*', so for
+	# every worktree branch awk took '+' as the branch name and the loop ran
+	# `git branch -d +`. ai-studio has many worktrees; this fired constantly.
+	#
+	# Squash-merge note: when a PR is squash-merged (ai-studio merges every PR that
+	# way) the local branch is NOT an ancestor of main, so `git branch -d` correctly
+	# refuses it. That is git being right -- but a four-line warning per branch buries
+	# everything else. ai-studio had 124 such branches on 2026-09-02, so the refusals
+	# are summarised instead of printed one by one. Nothing is auto-force-deleted.
+	ITER_KEPT_COUNT=0
+	while read -r ITER_GONE_BRANCH
 	do
-		if git branch -d "$ITER_GONE_BRANCH" 2> /dev/null; then
+		[ -z "$ITER_GONE_BRANCH" ] && continue
+		if git branch -d "$ITER_GONE_BRANCH" > /dev/null 2>&1; then
 			echo "Deleted local branch (remote branch was deleted): ${ITER_GONE_BRANCH}"
 		else
-			echo "Skipped deleting ${ITER_GONE_BRANCH}: has commits not merged upstream (remote branch was deleted). Remove manually with 'git branch -D ${ITER_GONE_BRANCH}' if intended."
+			ITER_KEPT_COUNT=$((ITER_KEPT_COUNT + 1))
 		fi
-	done
+	done < <(git branch -vv | sed -E 's/^[*+] /  /' | awk '/: gone]/{print $1}')
+	if [ "$ITER_KEPT_COUNT" -gt 0 ]; then
+		echo "Kept ${ITER_KEPT_COUNT} local branch(es) whose remote is gone but which git will not fast-delete."
+		echo "  Normal after a squash-merge. List: git branch -vv | grep ': gone]'"
+		echo "  Delete one deliberately with: git branch -D <name>"
+	fi
 
+	git branch -vv | grep -v '\[.*\]'
 	git stash list
 
 done
