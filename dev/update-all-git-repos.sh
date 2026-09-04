@@ -41,19 +41,20 @@ do
 	    | awk -v r="$ITER_REPO_DIR" '$1=="100644"{sub(/^[^\t]*\t/,""); print r"/"$0}' )
 done < <(find . -maxdepth 4 -mindepth 2 -type d -name '.git' ! -path './third_party/*' ! -path './dataiku_repos/*' -print0) >> "$GIT_NONEXEC_LIST"
 
-echo "Marking .sh and .zsh files as executable (skipping $(wc -l < "$GIT_NONEXEC_LIST" | tr -d ' ') git-tracked non-executable file(s))..."
-gfind . -type f \
-	! -executable \
-	! -path '*.venv*' \
-	! -path '*.git*' \
-	! -path '*.claude*' \
-	! -path '*third_party*' \
-	! -path './dataiku_repos/*' \
-	! -path '*.vscode*' \
-	! -path '*.ruff_cache*' \
-	\( -name '*.sh' -o -name '*.zsh' \) -print \
-	| grep -vxF -f "$GIT_NONEXEC_LIST" \
-	| while IFS= read -r ITER_SH_FILE; do chmod u+x "$ITER_SH_FILE" && echo "$ITER_SH_FILE"; done
+# Disabling the chmod +x'ing of .sh and .zsh files because it is too disruptive to the git history. The script will still find and list them, but it won't change their permissions.
+# echo "Marking .sh and .zsh files as executable (skipping $(wc -l < "$GIT_NONEXEC_LIST" | tr -d ' ') git-tracked non-executable file(s))..."
+# gfind . -type f \
+# 	! -executable \
+# 	! -path '*.venv*' \
+# 	! -path '*.git*' \
+# 	! -path '*.claude*' \
+# 	! -path '*third_party*' \
+# 	! -path './dataiku_repos/*' \
+# 	! -path '*.vscode*' \
+# 	! -path '*.ruff_cache*' \
+# 	\( -name '*.sh' -o -name '*.zsh' \) -print \
+# 	| grep -vxF -f "$GIT_NONEXEC_LIST" \
+# 	| while IFS= read -r ITER_SH_FILE; do chmod u+x "$ITER_SH_FILE" && echo "$ITER_SH_FILE"; done
 
 echo "Searching for git repositories..."
 # next line is touchy, be cautious about making changes
