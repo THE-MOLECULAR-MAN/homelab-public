@@ -7,6 +7,6 @@ ipykernel
 pip
 pipreqs
 pandas==2.2.3
-pyspark==3.5.5
+pyspark==3.5.8
 timeout_decorator==0.5.0
 wheel
